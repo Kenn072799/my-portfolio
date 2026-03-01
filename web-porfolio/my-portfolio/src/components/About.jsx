@@ -1,5 +1,5 @@
 import React from "react";
-import Heading from "./Heading";
+import Heading from "./common/Heading";
 
 const About = () => {
   const descriptions = [
@@ -21,7 +21,7 @@ const About = () => {
       <ul className="space-y-4">
         {descriptions.map((description, index) => (
           <li key={index}>
-            <p className="text-text-secondary text-sm leading-relaxed max-w-3xl">
+            <p className="text-text-secondary font-semibold text-sm leading-relaxed max-w-3xl">
               {description.sentence}
             </p>
           </li>

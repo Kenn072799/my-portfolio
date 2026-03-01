@@ -1,4 +1,5 @@
 import React from "react";
+import { AiFillGithub } from "react-icons/ai";
 
 const Header = () => {
   return (
@@ -17,21 +18,27 @@ const Header = () => {
         </p>
 
         <p className="flex items-center gap-1 text-text-muted text-sm">
-          <span className="material-symbols-outlined leading-none">
+          <span className="material-symbols-outlined">
             location_on
           </span>
           Angono, Rizal • Philippines
         </p>
 
-        <div className="flex gap-3 pt-1 text-sm">
-          <a className="text-accent-main hover:underline" href="#">
-            GitHub
+        <div className="flex gap-3 pt-1">
+          <a
+            className="text-text-secondary font-medium hover:underline"
+            href="#"
+          >
+            <div className="shadow px-3 py-1 flex items-center gap-1">
+              <AiFillGithub className="text-xl" />
+              <p className="text-sm">GitHub</p>
+            </div>
           </a>
-          <a className="text-accent-main hover:underline" href="#">
-            LinkedIn
+          <a className="text-accent-main font-medium hover:underline" href="#">
+            <div className="shadow px-3 py-1">LinkedIn</div>
           </a>
-          <a className="text-accent-main hover:underline" href="#">
-            Facebook
+          <a className="text-accent-main font-medium hover:underline" href="#">
+            <div className="shadow px-3 py-1">Facebook</div>
           </a>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import Heading from "./Heading";
+import Heading from "./common/Heading";
 
 const experiences = [
   {
@@ -25,26 +25,31 @@ const Experience = () => {
 
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-1.5 top-0 bottom-0 w-px bg-border-default" />
+        <div className="absolute left-1.5 top-1 bottom-0 w-px h-[90%] bg-border-default" />
 
         <ul className="space-y-6">
           {experiences.map((experience, index) => (
             <li key={index} className="relative pl-8">
               {/* Dot */}
               <span
-                className={`absolute left-0 top-1.5 w-3 h-3
-                  ${
-                    experience.current
-                      ? "bg-text-primary rounded-full ring-2 ring-offset-2"
-                      : "bg-white border-border-default rounded-full border-2 "
-                  }`}
+                className={`absolute  top-1 w-3 h-3 left-0
+      ${
+        experience.current
+          ? "bg-text-primary left-0"
+          : "bg-white border-border-default border-2"
+      }`}
               />
+
+              {/* Horizontal line */}
+              <span className="absolute left-3 top-2.25 w-4 -z-10 h-px bg-border-default" />
+
               {/* Content */}
               <div className="text-sm">
                 <p className="font-bold">{experience.title}</p>
+
                 <div className="flex justify-between text-text-muted text-xs">
                   <p className="font-semibold">{experience.company}</p>
-                  <p>{experience.year}</p>
+                  <p className="whitespace-nowrap">{experience.year}</p>
                 </div>
               </div>
             </li>

@@ -1,5 +1,5 @@
 import React from "react";
-import Heading from "./Heading";
+import Heading from "./common/Heading";
 
 const TechStack = () => {
   const stacks = [
@@ -25,10 +25,22 @@ const TechStack = () => {
     {
       title: "AI / Generative AI",
       items: [
-        "Azure AI Foundry",
+        "Azure AI",
         "Retrieval-Augmented Generation (RAG)",
         "AI Agent Architecture",
         "Prompt Engineering",
+      ],
+    },
+    {
+      title: "Development Tools",
+      items: [
+        "Visual Studio",
+        "Visual Studio Code",
+        "Git",
+        "Postman",
+        "Swagger",
+        "IntelliJ IDEA",
+        "Microsoft SQL Server Management Studio (SSMS)",
       ],
     },
   ];
@@ -49,7 +61,7 @@ const TechStack = () => {
             {stack.items.map((item) => (
               <li
                 key={item}
-                className="px-3 py-1 shadow-sm border border-border-default rounded-full text-xs font-semibold text-text-primary"
+                className="px-3 py-1 shadow-sm rounded-full text-xs font-semibold text-text-secondary"
               >
                 {item}
               </li>
