@@ -11,7 +11,7 @@ const Home = () => {
     <div>
       <Header />
       <About />
-      <div className="flex gap-2 border-b border-border-default">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-4 items-start">
         <TechStack />
         <Experience />
       </div>

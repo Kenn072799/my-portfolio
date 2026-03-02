@@ -46,14 +46,14 @@ const TechStack = () => {
   ];
 
   return (
-    <div className="p-4 max-w-md">
-      <Heading size="md" weight="md">
+    <section className="p-4 rounded-md bg-bg-muted/30">
+      <Heading size="md" weight="md" className="mb-4">
         Tech Stack
       </Heading>
 
       {stacks.map((stack) => (
-        <div key={stack.title}>
-          <Heading weight="md" className="py-2">
+        <div key={stack.title} className="mb-4">
+          <Heading weight="md" className="mb-2 text-sm">
             {stack.title}
           </Heading>
 
@@ -61,8 +61,9 @@ const TechStack = () => {
             {stack.items.map((item) => (
               <li
                 key={item}
-                className="px-3 py-1 shadow-sm rounded-full text-xs font-semibold
-                 text-text-secondary hover:bg-black/5 cursor-default"
+                className="px-3 py-1 rounded-full text-xs font-semibold
+                           border border-border-default bg-white
+                           text-text-secondary"
               >
                 {item}
               </li>
@@ -70,7 +71,7 @@ const TechStack = () => {
           </ul>
         </div>
       ))}
-    </div>
+    </section>
   );
 };
 

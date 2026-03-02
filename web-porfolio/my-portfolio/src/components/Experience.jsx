@@ -18,38 +18,41 @@ const experiences = [
 
 const Experience = () => {
   return (
-    <section className="p-4 space-y-4 flex-1">
-      <Heading size="md" weight="md">
+    <section className="p-4 flex-1">
+      <Heading size="md" weight="md" className="mb-4">
         Experience
       </Heading>
 
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-1.5 top-1 bottom-0 w-px bg-border-default" />
+        <div className="absolute left-2 top-0 bottom-0 w-px bg-border-default" />
 
-        <ul className="space-y-6">
+        <ul className="space-y-8">
           {experiences.map((experience, index) => (
-            <li key={index} className="relative pl-8">
+            <li key={index} className="relative pl-8 flex gap-4">
               {/* Dot */}
               <span
-                className={`absolute  top-1 w-3 h-3 left-0
-      ${
-        experience.current
-          ? "bg-text-primary left-0"
-          : "bg-white border-border-default border-2"
-      }`}
+                className={`mt-1 w-3 h-3 rounded-full shrink-0
+              ${
+                experience.current
+                  ? "bg-text-primary"
+                  : "bg-white border-2 border-border-default"
+              }`}
               />
 
-              {/* Horizontal line */}
-              <span className="absolute left-3 top-2.25 w-4 -z-10 h-px bg-border-default" />
+              {/* Horizontal connector */}
+              <span className="absolute left-2 top-2 w-4 h-px bg-border-default" />
 
               {/* Content */}
-              <div className="text-sm">
-                <p className="font-bold">{experience.title}</p>
+              <div className="text-sm w-full">
+                <p className="font-bold leading-snug">{experience.title}</p>
 
-                <div className="flex justify-between text-text-muted text-xs">
+                {/* Company + Year (FIXED ALIGNMENT) */}
+                <div className="grid grid-cols-[1fr_auto] items-center gap-4 text-text-muted text-xs">
                   <p className="font-semibold">{experience.company}</p>
-                  <p className="whitespace-nowrap">{experience.year}</p>
+                  <p className="whitespace-nowrap text-right">
+                    {experience.year}
+                  </p>
                 </div>
               </div>
             </li>

@@ -1,5 +1,10 @@
 import React from "react";
-import { AiFillGithub, AiFillFacebook, AiFillLinkedin } from "react-icons/ai";
+import {
+  AiFillGithub,
+  AiFillFacebook,
+  AiFillLinkedin,
+  AiOutlineMail,
+} from "react-icons/ai";
 
 const socialLinks = [
   {
@@ -24,44 +29,70 @@ const socialLinks = [
 
 const Header = () => {
   return (
-    <div className="flex items-center gap-4 py-4 border-b border-border-default">
+    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 py-4">
+      {/* Avatar */}
       <img
         src="https://placehold.co/120x120"
         alt="Profile picture"
-        className="w-28 h-28"
+        className="w-28 h-28 rounded-full object-cover border border-border-default"
       />
 
-      <div className="flex flex-col gap-1">
+      {/* Content */}
+      <div className="flex flex-col gap-1 text-center sm:text-left w-full">
         <p className="text-2xl font-bold text-text-primary">Kenneth Altes</p>
 
-        <p className="text-sm text-text-secondary font-medium">
+        <p className="text-sm text-text-muted font-medium">
           Associate Software Engineer
         </p>
 
-        <p className="flex items-center gap-1 text-text-muted text-sm">
-          <span className="material-symbols-outlined">location_on</span>
+        <p className="flex items-center justify-center sm:justify-start gap-1 text-text-muted text-sm">
+          <span className="material-symbols-outlined text-base">
+            location_on
+          </span>
           Angono, Rizal • Philippines
         </p>
 
-        <div className="flex gap-2 pt-1">
-          {socialLinks.map((item, index) => {
-            const Icon = item.icon;
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-2 pt-3 w-full sm:w-auto">
+          {/* Email – primary */}
+          <a
+            href="mailto:kennethaltes27@gmail.com"
+            className="w-full sm:w-auto font-medium shadow px-4 py-2
+                   bg-text-primary text-white
+                   flex items-center justify-center gap-1 rounded
+                   hover:bg-black/90 transition"
+          >
+            <AiOutlineMail />
+            <span className="text-sm">Send Email</span>
+          </a>
 
-            return (
-              <a
-                key={index}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${item.className} font-medium`}
-              >
-                <div className="shadow px-3 py-1 flex items-center gap-1 hover:bg-black/5 transition hover:translate-y-0.5 duration-150 hover:shadow-none">
-                  <Icon className="text-xl" />
-                  <p className="text-sm">{item.name}</p>
-                </div>
-              </a>
-            );
-          })}
+          {/* Social links (FIXED) */}
+          <div className="flex gap-2 w-full sm:w-auto">
+            {socialLinks.map((item, index) => {
+              const Icon = item.icon;
+
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${item.className}
+                          flex-1 sm:flex-none
+                          px-2 sm:px-3 py-2
+                          border border-border-default
+                          flex items-center justify-center sm:justify-start
+                          gap-1 rounded
+                          hover:bg-black/5 transition`}
+                >
+                  <Icon className="text-lg shrink-0" />
+                  <span className="text-xs sm:text-sm whitespace-nowrap">
+                    {item.name}
+                  </span>
+                </a>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

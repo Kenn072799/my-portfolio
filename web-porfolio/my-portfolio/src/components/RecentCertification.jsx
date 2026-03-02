@@ -54,39 +54,36 @@ const RecentCertification = () => {
 
         {certifications.length > 4 && (
           <button
-            className="text-sm font-semibold cursor-pointer px-2 py-1 flex items-center gap-1
-          hover:bg-gray-100 active:bg-gray-200 active:translate-x-1 duration-200 "
+            className="text-sm font-semibold px-3 py-1 flex items-center gap-1
+                   border border-border-default rounded
+                   hover:bg-gray-100 transition"
           >
             View All
-            <span className="material-symbols-outlined arrow">
+            <span className="material-symbols-outlined text-xs">
               arrow_forward_ios
             </span>
           </button>
         )}
       </div>
 
-      <div className="flex gap-2 flex-col">
-        {certifications.slice(0, 4).map((certification, index) => {
-          return (
-            <div
-              key={index}
-              className="relative px-8 py-2 border border-border-default
-             before:absolute before:left-0 before:top-0 before:h-full before:w-4
-             before:bg-linear-to-b before:from-yellow-400 before:via-yellow-500 before:to-amber-600 
-             hover:-translate-y-1 duration-200 hover:shadow-md"
-            >
-              <p className="font-bold whitespace-nowrap">
-                {certification.name}
-              </p>
-              <p className="whitespace-nowrap text-text-secondary font-semibold text-sm">
-                {certification.from}
-              </p>
-              <p className="whitespace-nowrap text-sm text-text-secondary">
-                {certification.description}
-              </p>
-            </div>
-          );
-        })}
+      <div className="flex flex-col gap-3">
+        {certifications.slice(0, 4).map((certification, index) => (
+          <div
+            key={index}
+            className="relative px-8 py-3 border border-border-default
+                   before:absolute before:left-0 before:top-0 before:h-full before:w-3
+                   before:bg-gradient-to-b before:from-yellow-400 before:via-yellow-500 before:to-amber-600
+                   hover:shadow-md transition"
+          >
+            <p className="font-bold">{certification.name}</p>
+            <p className="text-text-secondary font-semibold text-sm">
+              {certification.from}
+            </p>
+            <p className="text-sm text-text-secondary">
+              {certification.description}
+            </p>
+          </div>
+        ))}
       </div>
     </section>
   );

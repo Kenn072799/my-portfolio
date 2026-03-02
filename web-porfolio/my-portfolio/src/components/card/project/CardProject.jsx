@@ -5,8 +5,10 @@ const CardProject = ({ name, description, link, linkName, tags = [] }) => {
   return (
     <a href={link} target="_blank" rel="noopener noreferrer" className="h-full">
       <div
-        className="h-full p-4 shadow-sm hover:-translate-y-1 duration-200 hover:shadow-md cursor-pointer
-                      flex flex-col space-y-3"
+        className="h-full p-4 border border-border-default
+               flex flex-col space-y-3 cursor-pointer
+               transition-all duration-200
+               hover:shadow-md hover:bg-bg-muted/40"
       >
         {/* Title */}
         <Heading as="h3" weight="md" className="line-clamp-2">
@@ -21,8 +23,9 @@ const CardProject = ({ name, description, link, linkName, tags = [] }) => {
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="px-2 py-0.5 text-xs font-mono rounded shadow font-semibold
-                         bg-bg-muted text-text-muted"
+              className="px-2 py-0.5 text-xs font-mono rounded
+                     border border-border-default
+                     bg-bg-muted text-text-muted"
             >
               {tag}
             </span>

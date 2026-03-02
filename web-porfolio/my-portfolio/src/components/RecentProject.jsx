@@ -31,29 +31,38 @@ const projects = [
     linkName: "ask-ai.com",
     tags: ["Azure", "Python", "RAG"],
   },
+  {
+    name: "AI RAG Q&A",
+    description: "Ask questions from documents.",
+    link: "https://github.com/yourusername/ai-rag-qna",
+    linkName: "ask-ai.com",
+    tags: ["Azure", "Python", "RAG"],
+  },
 ];
 
 const RecentProject = () => {
   return (
-    <section className="max-w-4xl mx-auto p-4 border-b border-border-default">
+    <section className="max-w-4xl mx-auto p-4">
       <div className="flex items-center justify-between mb-4">
         <Heading size="md" weight="md">
           Recent Projects
         </Heading>
+
         {projects.length > 4 && (
           <button
-            className="text-sm font-semibold cursor-pointer px-2 py-1 flex items-center gap-1
-          hover:bg-gray-100 active:bg-gray-200 active:translate-x-1 duration-200 "
+            className="text-sm font-semibold px-3 py-1 flex items-center gap-1
+                   border border-border-default rounded
+                   hover:bg-gray-100 transition"
           >
             View All
-            <span className="material-symbols-outlined arrow">
+            <span className="material-symbols-outlined text-xs">
               arrow_forward_ios
             </span>
           </button>
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 mt-1">
         {projects.slice(0, 4).map((project, index) => (
           <CardProject key={index} {...project} />
         ))}

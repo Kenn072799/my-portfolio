@@ -20,8 +20,9 @@ const About = () => {
 
       <ul className="space-y-4">
         {descriptions.map((description, index) => (
-          <li key={index}>
-            <p className="text-text-secondary font-semibold text-sm leading-relaxed max-w-3xl">
+          <li key={index} className="flex gap-3">
+            <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-border-default shrink-0" />
+            <p className="text-text-secondary text-sm leading-relaxed max-w-3xl">
               {description.sentence}
             </p>
           </li>
