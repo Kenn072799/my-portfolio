@@ -4,6 +4,7 @@ import About from "../components/About";
 import Experience from "../components/Experience";
 import TechStack from "../components/TechStack";
 import RecentProject from "../components/RecentProject";
+import RecentCertification from "../components/RecentCertification";
 
 const Home = () => {
   return (
@@ -15,6 +16,7 @@ const Home = () => {
         <Experience />
       </div>
       <RecentProject />
+      <RecentCertification />
     </div>
   );
 };

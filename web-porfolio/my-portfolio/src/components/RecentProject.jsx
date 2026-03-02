@@ -40,17 +40,21 @@ const RecentProject = () => {
         <Heading size="md" weight="md">
           Recent Projects
         </Heading>
-        <button
-          className="text-sm font-semibold cursor-pointer px-2 py-1 flex items-center gap-1
-         hover:bg-gray-100 active:bg-gray-200 active:translate-x-1 duration-200 "
-        >
-          View All
-          <span class="material-symbols-outlined arrow">arrow_forward_ios</span>
-        </button>
+        {projects.length > 4 && (
+          <button
+            className="text-sm font-semibold cursor-pointer px-2 py-1 flex items-center gap-1
+          hover:bg-gray-100 active:bg-gray-200 active:translate-x-1 duration-200 "
+          >
+            View All
+            <span className="material-symbols-outlined arrow">
+              arrow_forward_ios
+            </span>
+          </button>
+        )}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {projects.map((project, index) => (
+        {projects.slice(0, 4).map((project, index) => (
           <CardProject key={index} {...project} />
         ))}
       </div>

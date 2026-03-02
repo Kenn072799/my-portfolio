@@ -25,7 +25,7 @@ const Experience = () => {
 
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-1.5 top-1 bottom-0 w-px h-[90%] bg-border-default" />
+        <div className="absolute left-1.5 top-1 bottom-0 w-px bg-border-default" />
 
         <ul className="space-y-6">
           {experiences.map((experience, index) => (

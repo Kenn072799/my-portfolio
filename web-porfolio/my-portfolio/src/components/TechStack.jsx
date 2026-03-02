@@ -61,7 +61,8 @@ const TechStack = () => {
             {stack.items.map((item) => (
               <li
                 key={item}
-                className="px-3 py-1 shadow-sm rounded-full text-xs font-semibold text-text-secondary"
+                className="px-3 py-1 shadow-sm rounded-full text-xs font-semibold
+                 text-text-secondary hover:bg-black/5 cursor-default"
               >
                 {item}
               </li>
