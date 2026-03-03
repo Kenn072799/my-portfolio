@@ -1,5 +1,9 @@
 import React from "react";
 import Heading from "./common/Heading";
+import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
+
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 
 const About = () => {
   const descriptions = [
@@ -18,16 +22,27 @@ const About = () => {
         About
       </Heading>
 
-      <ul className="space-y-4">
+      <motion.div
+        variants={staggerContainer(0.12)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+        className="space-y-4"
+      >
         {descriptions.map((description, index) => (
-          <li key={index} className="flex gap-3">
+          <motion.div
+            key={index}
+            variants={fadeUpItem(10)}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="flex gap-3"
+          >
             <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-border-default shrink-0" />
             <p className="text-text-secondary text-sm leading-relaxed max-w-3xl">
               {description.sentence}
             </p>
-          </li>
+          </motion.div>
         ))}
-      </ul>
+      </motion.div>
     </section>
   );
 };

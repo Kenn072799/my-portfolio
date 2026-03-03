@@ -66,7 +66,7 @@ const Header = () => {
             <span className="text-sm">Send Email</span>
           </a>
 
-          {/* Social links (FIXED) */}
+          {/* Social links */}
           <div className="flex gap-2 w-full sm:w-auto">
             {socialLinks.map((item, index) => {
               const Icon = item.icon;

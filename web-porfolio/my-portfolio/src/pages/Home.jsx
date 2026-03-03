@@ -12,8 +12,12 @@ const Home = () => {
       <Header />
       <About />
       <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-4 items-start">
-        <TechStack />
-        <Experience />
+        <div className="order-2 lg:order-1">
+          <TechStack />
+        </div>
+        <div className="order-1 lg:order-2">
+          <Experience />
+        </div>
       </div>
       <RecentProject />
       <RecentCertification />

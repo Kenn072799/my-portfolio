@@ -1,5 +1,9 @@
 import React from "react";
 import Heading from "./common/Heading";
+import { fadeUpItem } from "../utils/motionVariants";
+
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 
 const TechStack = () => {
   const stacks = [
@@ -57,18 +61,25 @@ const TechStack = () => {
             {stack.title}
           </Heading>
 
-          <ul className="flex flex-wrap gap-2">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.8 }}
+            className="flex flex-wrap gap-2"
+          >
             {stack.items.map((item) => (
-              <li
+              <motion.div
                 key={item}
+                variants={fadeUpItem(10)}
+                transition={{ duration: 0.35, ease: "easeOut" }}
                 className="px-3 py-1 rounded-full text-xs font-semibold
                            border border-border-default bg-white
                            text-text-secondary"
               >
                 {item}
-              </li>
+              </motion.div>
             ))}
-          </ul>
+          </motion.div>
         </div>
       ))}
     </section>

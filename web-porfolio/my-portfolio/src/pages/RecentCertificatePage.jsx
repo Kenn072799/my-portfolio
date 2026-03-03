@@ -1,6 +1,6 @@
-import React from "react";
-import Heading from "./common/Heading";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Heading from "../components/common/Heading";
 import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
 
 // eslint-disable-next-line no-unused-vars
@@ -28,7 +28,7 @@ const certifications = [
     description: "Java basics and OOP concepts.",
   },
   {
-    name: "Azure Fundamentals (AZ-900)",
+    name: "Azure Fundamentals (AZ-900) Azure Fundamentals (AZ-900) Azure Fundamentals (AZ-900) Azure Fundamentals (AZ-900)",
     from: "Microsoft",
     description: "Cloud concepts and Azure services.",
   },
@@ -49,40 +49,44 @@ const certifications = [
   },
 ];
 
-const RecentCertification = () => {
+const RecentCertificatePage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
-    <section className="max-w-4xl mx-auto p-4">
-      <div className="flex items-center justify-between mb-4">
+    <div className="py-4">
+      {/* Back button and Heading */}
+      <div className="flex gap-4 pb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-sm font-semibold px-3 py-1 flex items-center gap-1
+        border border-border-default rounded
+        hover:bg-gray-100 transition cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-xs">
+            arrow_back_ios
+          </span>
+          Go Back
+        </button>
         <Heading size="md" weight="md">
-          Recent Certifications
+          All Recent Certifications
         </Heading>
-
-        {certifications.length > 4 && (
-          <Link
-            to="recent-certification"
-            className="text-sm font-semibold px-3 py-1 flex items-center gap-1
-                   border border-border-default rounded
-                   hover:bg-gray-100 transition"
-          >
-            View All
-            <span className="material-symbols-outlined text-xs">
-              arrow_forward_ios
-            </span>
-          </Link>
-        )}
       </div>
-
       <motion.div
-        variants={staggerContainer(0.08)}
+        variants={staggerContainer(0.12)}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.2 }}
-        className="flex flex-col gap-3"
+        className="flex flex-col sm:grid gap-4 sm:grid-cols-2"
       >
-        {certifications.slice(0, 4).map((certification, index) => (
+        {certifications.map((certification, index) => (
           <motion.div
             key={index}
-            variants={fadeUpItem(20)}
+            variants={fadeUpItem(10)}
             transition={{ duration: 0.35, ease: "easeOut" }}
             className="relative px-8 py-3 border border-border-default
                    before:absolute before:left-0 before:top-0 before:h-full before:w-3
@@ -101,8 +105,8 @@ const RecentCertification = () => {
           </motion.div>
         ))}
       </motion.div>
-    </section>
+    </div>
   );
 };
 
-export default RecentCertification;
+export default RecentCertificatePage;

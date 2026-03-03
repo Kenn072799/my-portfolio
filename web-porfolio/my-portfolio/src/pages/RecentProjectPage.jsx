@@ -1,10 +1,11 @@
-import React from "react";
-import Heading from "./common/Heading";
-import CardProject from "./card/project/CardProject";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Heading from "../components/common/Heading";
+import CardProject from "../components/card/project/CardProject";
+import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
+
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
 
 const projects = [
   {
@@ -44,29 +45,34 @@ const projects = [
   },
 ];
 
-const RecentProject = () => {
+const RecentProjectPage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
+
   return (
-    <section className="max-w-4xl mx-auto p-4">
-      <div className="flex items-center justify-between mb-4">
+    <div className="py-4">
+      {/* Back button and Heading */}
+      <div className="flex gap-4 pb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-sm font-semibold px-3 py-1 flex items-center gap-1
+        border border-border-default rounded
+        hover:bg-gray-100 transition cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-xs">
+            arrow_back_ios
+          </span>
+          Go Back
+        </button>
         <Heading size="md" weight="md">
-          Recent Projects
+          All Recent Projects
         </Heading>
-
-        {projects.length > 4 && (
-          <Link
-            to="recent-project"
-            className="text-sm font-semibold px-3 py-1 flex items-center gap-1
-                   border border-border-default rounded
-                   hover:bg-gray-100 transition"
-          >
-            View All
-            <span className="material-symbols-outlined text-xs">
-              arrow_forward_ios
-            </span>
-          </Link>
-        )}
       </div>
-
       <motion.div
         variants={staggerContainer(0.12)}
         initial="hidden"
@@ -74,18 +80,18 @@ const RecentProject = () => {
         viewport={{ once: true, amount: 0.2 }}
         className="grid gap-4 sm:grid-cols-2 mt-1"
       >
-        {projects.slice(0, 4).map((project, index) => (
+        {projects.map((project, index) => (
           <motion.div
             key={index}
-            variants={fadeUpItem(30)}
+            variants={fadeUpItem(10)}
             transition={{ duration: 0.35, ease: "easeOut" }}
           >
             <CardProject {...project} />
           </motion.div>
         ))}
       </motion.div>
-    </section>
+    </div>
   );
 };
 
-export default RecentProject;
+export default RecentProjectPage;
