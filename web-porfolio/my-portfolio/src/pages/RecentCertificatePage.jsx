@@ -5,6 +5,7 @@ import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
 
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { vibrate } from "../utils/vibrate";
 
 const certifications = [
   {
@@ -62,7 +63,10 @@ const RecentCertificatePage = () => {
       {/* Back button and Heading */}
       <div className="flex gap-4 pb-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            navigate(-1);
+            vibrate(12);
+          }}
           className="text-sm font-semibold px-3 py-1 flex items-center gap-1
         border border-border-default rounded
         hover:bg-gray-100 transition cursor-pointer"
@@ -88,6 +92,7 @@ const RecentCertificatePage = () => {
             key={index}
             variants={fadeUpItem(10)}
             transition={{ duration: 0.35, ease: "easeOut" }}
+            onClick={() => vibrate(8)}
             className="relative px-8 py-3 border border-border-default
                    before:absolute before:left-0 before:top-0 before:h-full before:w-3
                    before:bg-linear-to-b before:from-blue-400 before:via-blue-500 before:to-accent-main

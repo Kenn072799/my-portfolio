@@ -5,6 +5,8 @@ import {
   AiFillLinkedin,
   AiOutlineMail,
 } from "react-icons/ai";
+import ProfilePicture from "../assets/FormalAttire1x1.png";
+import { vibrate } from "../utils/vibrate";
 
 const socialLinks = [
   {
@@ -32,9 +34,9 @@ const Header = () => {
     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 py-4">
       {/* Avatar */}
       <img
-        src="https://placehold.co/120x120"
+        src={ProfilePicture}
         alt="Profile picture"
-        className="w-28 h-28 rounded-full object-cover border border-border-default"
+        className="w-32 h-32 rounded-full object-cover border border-border-default"
       />
 
       {/* Content */}
@@ -57,6 +59,7 @@ const Header = () => {
           {/* Email – primary */}
           <a
             href="mailto:kennethaltes27@gmail.com"
+            onClick={() => vibrate(8)}
             className="w-full sm:w-auto font-medium shadow px-4 py-2
                    bg-text-primary text-white
                    flex items-center justify-center gap-1 rounded
@@ -77,6 +80,7 @@ const Header = () => {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => vibrate(8)}
                   className={`${item.className}
                           flex-1 sm:flex-none
                           px-2 sm:px-3 py-2

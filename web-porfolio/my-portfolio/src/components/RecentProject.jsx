@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
+import { vibrate } from "../utils/vibrate";
 
 const projects = [
   {
@@ -55,9 +56,10 @@ const RecentProject = () => {
         {projects.length > 4 && (
           <Link
             to="recent-project"
+            onClick={() => vibrate(12)}
             className="text-sm font-semibold px-3 py-1 flex items-center gap-1
-                   border border-border-default rounded
-                   hover:bg-gray-100 transition"
+                       border border-border-default rounded
+                       hover:bg-gray-100 transition"
           >
             View All
             <span className="material-symbols-outlined text-xs">
@@ -74,15 +76,38 @@ const RecentProject = () => {
         viewport={{ once: true, amount: 0.2 }}
         className="grid gap-4 sm:grid-cols-2 mt-1"
       >
-        {projects.slice(0, 4).map((project, index) => (
+        {projects.length > 0 ? (
+          projects.slice(0, 4).map((project, index) => (
+            <motion.div
+              key={index}
+              variants={fadeUpItem(30)}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              onClick={() => vibrate(8)}
+            >
+              <CardProject {...project} />
+            </motion.div>
+          ))
+        ) : (
           <motion.div
-            key={index}
-            variants={fadeUpItem(30)}
-            transition={{ duration: 0.35, ease: "easeOut" }}
+            variants={fadeUpItem(20)}
+            transition={{ duration: 0.4 }}
+            className="col-span-full flex flex-col items-center justify-center
+                       border border-dashed border-border-default
+                       rounded-lg py-12 text-center"
           >
-            <CardProject {...project} />
+            <span className="material-symbols-outlined text-4xl text-text-muted mb-3">
+              work_off
+            </span>
+
+            <p className="font-semibold text-text-primary">
+              No projects available
+            </p>
+
+            <p className="text-sm text-text-muted mt-1 max-w-xs">
+              Projects will appear here once they are added.
+            </p>
           </motion.div>
-        ))}
+        )}
       </motion.div>
     </section>
   );

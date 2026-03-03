@@ -20,7 +20,14 @@ const TechStack = () => {
     },
     {
       title: "Backend",
-      items: ["ASP.NET Core", "Microsoft SQL Server", "Node.js", "MongoDB"],
+      items: [
+        "ASP.NET Core",
+        "Microsoft SQL Server",
+        "Node.js",
+        "MongoDB",
+        "Express.js",
+        "Java",
+      ],
     },
     {
       title: "Cloud and DevOps",
