@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "../components/Footer";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import Chatbot from "../components/chatbot/Chatbot";
 
 const MainLayout = () => {
   return (
@@ -17,7 +18,9 @@ const MainLayout = () => {
           <Outlet />
         </motion.div>
       </div>
-
+      <div className="right-4 bottom-4 fixed">
+        <Chatbot />
+      </div>
       {/* Footer */}
       <Footer />
     </div>

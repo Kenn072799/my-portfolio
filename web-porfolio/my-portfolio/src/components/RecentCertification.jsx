@@ -67,7 +67,7 @@ const RecentCertification = () => {
                    hover:bg-gray-100 transition"
           >
             View All
-            <span className="material-symbols-outlined text-xs">
+            <span className="material-symbols-outlined">
               arrow_forward_ios
             </span>
           </Link>
