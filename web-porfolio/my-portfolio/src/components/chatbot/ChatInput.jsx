@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 
-const ChatInput = () => {
+const ChatInput = ({ onSend }) => {
+  const [input, setInput] = useState("");
+
+  const send = () => {
+    if (!input.trim()) return;
+
+    onSend(input);
+    setInput("");
+  };
+
   return (
-    <div className="border-t p-3 flex items-center gap-2">
+    <div className="border-t p-3 flex gap-2">
       <input
-        type="text"
-        placeholder="Ask about Kenneth's AI projects..."
-        className="flex-1 border border-border-default rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-text-primary"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Ask about Kenneth..."
+        className="flex-1 border rounded px-3 py-2 text-sm focus:outline-none"
       />
 
-      <button className="px-3 py-2 text-sm bg-text-primary text-white rounded-md hover:opacity-90 transition">
+      <button
+        onClick={send}
+        className="bg-text-primary text-white px-3 py-2 rounded text-sm"
+      >
         Send
       </button>
     </div>
