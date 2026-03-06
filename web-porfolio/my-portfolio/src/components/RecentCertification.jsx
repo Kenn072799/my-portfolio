@@ -7,50 +7,7 @@ import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
 import { motion } from "framer-motion";
 import { vibrate } from "../utils/vibrate";
 
-const certifications = [
-  {
-    name: "Azure Fundamentals (AZ-900)",
-    from: "Microsoft",
-    description: "Cloud concepts and Azure services.",
-  },
-  {
-    name: "AWS Cloud Practitioner",
-    from: "Amazon Web Services",
-    description: "Core AWS cloud knowledge.",
-  },
-  {
-    name: "Responsive Web Design",
-    from: "freeCodeCamp",
-    description: "HTML and CSS fundamentals.",
-  },
-  {
-    name: "Java Programming Certificate",
-    from: "Oracle",
-    description: "Java basics and OOP concepts.",
-  },
-  {
-    name: "Azure Fundamentals (AZ-900)",
-    from: "Microsoft",
-    description: "Cloud concepts and Azure services.",
-  },
-  {
-    name: "AWS Cloud Practitioner",
-    from: "Amazon Web Services",
-    description: "Core AWS cloud knowledge.",
-  },
-  {
-    name: "Responsive Web Design",
-    from: "freeCodeCamp",
-    description: "HTML and CSS fundamentals.",
-  },
-  {
-    name: "Java Programming Certificate",
-    from: "Oracle",
-    description: "Java basics and OOP concepts.",
-  },
-];
-
-const RecentCertification = () => {
+const RecentCertification = ({ certifications = [], loading = false }) => {
   return (
     <section className="max-w-4xl mx-auto p-4">
       <div className="flex items-center justify-between mb-4">
@@ -64,7 +21,7 @@ const RecentCertification = () => {
             onClick={() => vibrate(12)}
             className="text-sm font-semibold px-3 py-1 flex items-center gap-1
                    border border-border-default rounded
-                   hover:bg-gray-100 transition"
+                   hover:bg-bg-muted transition"
           >
             View All
             <span className="material-symbols-outlined">
@@ -81,7 +38,15 @@ const RecentCertification = () => {
         viewport={{ once: true, amount: 0.2 }}
         className="flex flex-col gap-3"
       >
-        {certifications.length > 0 ? (
+        {loading ? (
+          [1, 2, 3, 4].map((i) => (
+            <div key={i} className="animate-pulse border border-border-default px-8 py-3 space-y-1">
+              <div className="h-4 bg-bg-muted rounded w-2/3" />
+              <div className="h-3 bg-bg-muted rounded w-1/3" />
+              <div className="h-3 bg-bg-muted rounded w-full" />
+            </div>
+          ))
+        ) : certifications.length > 0 ? (
           <>
             {certifications.slice(0, 4).map((certification, index) => (
               <motion.div
@@ -98,7 +63,7 @@ hover:shadow-md transition"
                   {certification.name}
                 </p>
                 <p className="text-text-secondary font-semibold text-sm">
-                  {certification.from}
+                  {certification.issuer ?? certification.from}
                 </p>
                 <p className="text-sm text-text-secondary">
                   {certification.description}

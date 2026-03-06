@@ -11,17 +11,18 @@ const ChatInput = ({ onSend }) => {
   };
 
   return (
-    <div className="border-t p-3 flex gap-2">
+    <div className="border-t border-border-default p-3 flex gap-2">
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && send()}
         placeholder="Ask about Kenneth..."
-        className="flex-1 border rounded px-3 py-2 text-sm focus:outline-none"
+        className="flex-1 border border-border-default rounded px-3 py-2 text-sm bg-bg-main text-text-primary placeholder:text-text-muted focus:outline-none"
       />
 
       <button
         onClick={send}
-        className="bg-text-primary text-white px-3 py-2 rounded text-sm"
+        className="bg-text-primary text-bg-main px-3 py-2 rounded text-sm hover:opacity-90 transition cursor-pointer"
       >
         Send
       </button>

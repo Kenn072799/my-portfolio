@@ -31,7 +31,7 @@ const ChatSuggestedQuestion = ({ sendMessage }) => {
           <button
             key={question.id}
             onClick={() => sendMessage(question.sendingMessage)}
-            className="text-sm border border-border-default px-3 py-1.5 rounded-md hover:bg-gray-100 transition"
+            className="text-sm border border-border-default text-text-secondary px-3 py-1.5 rounded-md hover:bg-bg-muted transition"
           >
             {question.question}
           </button>

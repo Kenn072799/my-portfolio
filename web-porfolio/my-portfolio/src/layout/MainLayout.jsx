@@ -11,9 +11,9 @@ const MainLayout = () => {
       {/* Main content */}
       <div className="flex-1 max-w-190 mx-auto px-4 w-full">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ y: 20 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5 }}
         >
           <Outlet />
         </motion.div>

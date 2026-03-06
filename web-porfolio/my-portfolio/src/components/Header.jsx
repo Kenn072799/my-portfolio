@@ -5,43 +5,70 @@ import {
   AiFillLinkedin,
   AiOutlineMail,
 } from "react-icons/ai";
+import { MdLightMode, MdDarkMode } from "react-icons/md";
 import ProfilePicture from "../assets/FormalAttire1x1.png";
+import ProfilePictureDark from "../assets/FormalAttire1x1_dark.png";
 import { vibrate } from "../utils/vibrate";
+import { useDarkMode } from "../hooks/useDarkMode";
 
 const socialLinks = [
   {
     name: "GitHub",
-    href: "https://github.com/yourusername",
+    href: import.meta.env.VITE_GITHUB_URL,
     icon: AiFillGithub,
     className: "text-text-secondary",
   },
   {
     name: "LinkedIn",
-    href: "https://linkedin.com/in/yourusername",
+    href: import.meta.env.VITE_LINKEDIN_URL,
     icon: AiFillLinkedin,
     className: "text-accent-main",
   },
   {
     name: "Facebook",
-    href: "https://facebook.com/yourusername",
+    href: import.meta.env.VITE_FACEBOOK_URL,
     icon: AiFillFacebook,
     className: "text-accent-main",
   },
 ];
 
 const Header = () => {
+  const { isDark, toggle } = useDarkMode();
+
   return (
     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 py-4">
+      {/* Dark mode toggle — mobile top */}
+      <div className="flex justify-end w-full sm:hidden">
+        <button
+          onClick={() => { toggle(); vibrate(8); }}
+          className="p-2 rounded-md hover:bg-bg-muted transition text-text-secondary"
+          aria-label="Toggle dark mode"
+        >
+          {isDark ? <MdLightMode size={20} /> : <MdDarkMode size={20} />}
+        </button>
+      </div>
+
       {/* Avatar */}
       <img
-        src={ProfilePicture}
+        src={isDark ? ProfilePictureDark : ProfilePicture}
         alt="Profile picture"
         className="w-32 h-32 rounded-full object-cover border border-border-default"
       />
 
       {/* Content */}
       <div className="flex flex-col gap-1 text-center sm:text-left w-full">
-        <p className="text-2xl font-bold text-text-primary">Kenneth Altes</p>
+        {/* Name row — desktop toggle sits on the right */}
+        <div className="flex items-center justify-center sm:justify-between">
+          <p className="text-2xl font-bold text-text-primary">Kenneth Altes</p>
+          {/* Dark mode toggle — desktop */}
+          <button
+            onClick={() => { toggle(); vibrate(8); }}
+            className="hidden sm:flex p-2 rounded-md hover:bg-bg-muted transition text-text-secondary"
+            aria-label="Toggle dark mode"
+          >
+            {isDark ? <MdLightMode size={20} /> : <MdDarkMode size={20} />}
+          </button>
+        </div>
 
         <p className="text-sm text-text-muted font-medium">
           Associate Software Engineer
@@ -58,12 +85,12 @@ const Header = () => {
         <div className="flex flex-col sm:flex-row gap-2 pt-3 w-full sm:w-auto">
           {/* Email – primary */}
           <a
-            href="mailto:kennethaltes27@gmail.com"
+            href={`mailto:${import.meta.env.VITE_EMAIL}`}
             onClick={() => vibrate(8)}
             className="w-full sm:w-auto font-medium shadow px-4 py-2
-                   bg-text-primary text-white
+                   bg-text-primary text-bg-main
                    flex items-center justify-center gap-1 rounded
-                   hover:bg-black/90 transition"
+                   hover:opacity-90 transition"
           >
             <AiOutlineMail />
             <span className="text-sm">Send Email</span>
@@ -87,7 +114,7 @@ const Header = () => {
                           border border-border-default
                           flex items-center justify-center sm:justify-start
                           gap-1 rounded
-                          hover:bg-black/5 transition`}
+                          hover:bg-bg-muted transition`}
                 >
                   <Icon className="text-lg shrink-0" />
                   <span className="text-xs sm:text-sm whitespace-nowrap">

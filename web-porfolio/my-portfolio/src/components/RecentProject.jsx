@@ -7,45 +7,7 @@ import { motion } from "framer-motion";
 import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
 import { vibrate } from "../utils/vibrate";
 
-const projects = [
-  {
-    name: "SmartHome Device Manager",
-    description: "Manage and schedule smart home devices.",
-    link: "https://github.com/yourusername/smarthome-device-manager",
-    linkName: "SmartHome.NET",
-    tags: ["C#", ".NET", "WinForms"],
-  },
-  {
-    name: "Job Order System",
-    description: "Track and manage job orders.",
-    link: "https://github.com/yourusername/job-order-system",
-    linkName: "JobOrder.com",
-    tags: ["React", "Node.js", "MongoDB"],
-  },
-  {
-    name: "Portfolio Website",
-    description: "Personal website built with React.",
-    link: "https://yourdomain.com",
-    linkName: "my-portfolio.com",
-    tags: ["React", "Tailwind CSS"],
-  },
-  {
-    name: "AI RAG Q&A",
-    description: "Ask questions from documents.",
-    link: "https://github.com/yourusername/ai-rag-qna",
-    linkName: "ask-ai.com",
-    tags: ["Azure", "Python", "RAG"],
-  },
-  {
-    name: "AI RAG Q&A",
-    description: "Ask questions from documents.",
-    link: "https://github.com/yourusername/ai-rag-qna",
-    linkName: "ask-ai.com",
-    tags: ["Azure", "Python", "RAG"],
-  },
-];
-
-const RecentProject = () => {
+const RecentProject = ({ projects = [], loading = false }) => {
   return (
     <section className="max-w-4xl mx-auto p-4">
       <div className="flex items-center justify-between mb-4">
@@ -59,7 +21,7 @@ const RecentProject = () => {
             onClick={() => vibrate(12)}
             className="text-sm font-semibold px-3 py-1 flex items-center gap-1
                        border border-border-default rounded
-                       hover:bg-gray-100 transition"
+                       hover:bg-bg-muted transition"
           >
             View All
             <span className="material-symbols-outlined">
@@ -76,7 +38,18 @@ const RecentProject = () => {
         viewport={{ once: true, amount: 0.2 }}
         className="grid gap-4 sm:grid-cols-2 mt-1"
       >
-        {projects.length > 0 ? (
+        {loading ? (
+          [1, 2, 3, 4].map((i) => (
+            <div key={i} className="animate-pulse border border-border-default rounded p-4 space-y-2">
+              <div className="h-4 bg-bg-muted rounded w-3/4" />
+              <div className="h-3 bg-bg-muted rounded w-full" />
+              <div className="flex gap-2 mt-2">
+                <div className="h-5 w-12 bg-bg-muted rounded-full" />
+                <div className="h-5 w-12 bg-bg-muted rounded-full" />
+              </div>
+            </div>
+          ))
+        ) : projects.length > 0 ? (
           projects.slice(0, 4).map((project, index) => (
             <motion.div
               key={index}

@@ -7,6 +7,7 @@ import ProfileAvatar from "./ProfileAvatar";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import ChatSuggestedQuestion from "./ChatSuggestedQuestion";
+import { sendChatMessage } from "../../api/chatApi";
 
 const Chatbot = () => {
   const [openChat, setOpenChat] = useState(false);
@@ -22,13 +23,20 @@ const Chatbot = () => {
     if (!text.trim()) return;
 
     const userMessage = { role: "user", content: text };
-
     setMessages((prev) => [...prev, userMessage]);
     setLoading(true);
 
-    // API call will go here later
-
-    setLoading(false);
+    try {
+      const reply = await sendChatMessage(text);
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, I couldn't connect to the server. Please try again." },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,7 +49,7 @@ const Chatbot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0 }}
             onClick={clickChat}
-            className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-2 rounded-sm shadow-lg bg-text-primary text-white text-sm font-medium hover:shadow-xl transition z-50 cursor-pointer"
+            className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-2 rounded-sm shadow-lg bg-text-primary text-bg-main text-sm font-medium hover:opacity-90 transition z-50 cursor-pointer"
           >
             <AiOutlineMessage size={18} />
             <span>Ask about Kenneth</span>
@@ -54,11 +62,11 @@ const Chatbot = () => {
             initial={{ opacity: 0, y: 250 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="fixed bottom-0 w-full md:bottom-6 right-0 md:right-6 h-svh md:w-104 md:h-128 bg-white shadow-2xl rounded-lg border border-border-default flex flex-col overflow-hidden z-40"
+            className="fixed bottom-0 w-full md:bottom-6 right-0 md:right-6 h-svh md:w-104 md:h-128 bg-bg-main shadow-2xl rounded-lg border border-border-default flex flex-col overflow-hidden z-40"
           >
             {/* Header */}
             <div
-              className="bg-bg-card flex items-center justify-between border-b px-4 py-2 cursor-pointer"
+              className="bg-bg-card flex items-center justify-between border-b border-border-default px-4 py-2 cursor-pointer"
               onClick={clickChat}
             >
               <div>

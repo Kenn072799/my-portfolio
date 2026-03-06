@@ -5,64 +5,29 @@ import { fadeUpItem } from "../utils/motionVariants";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
-const TechStack = () => {
-  const stacks = [
-    {
-      title: "Frontend",
-      items: [
-        "React",
-        "Angular",
-        "JQuery",
-        "JavaScript",
-        "Tailwind CSS",
-        "Bootstrap",
-      ],
-    },
-    {
-      title: "Backend",
-      items: [
-        "ASP.NET Core",
-        "Microsoft SQL Server",
-        "Node.js",
-        "MongoDB",
-        "Express.js",
-        "Java",
-      ],
-    },
-    {
-      title: "Cloud and DevOps",
-      items: ["Azure DevOps", "Azure Cloud", "Docker", "Kubernetes"],
-    },
-    {
-      title: "AI / Generative AI",
-      items: [
-        "Azure AI",
-        "Retrieval-Augmented Generation (RAG)",
-        "AI Agent Architecture",
-        "Prompt Engineering",
-      ],
-    },
-    {
-      title: "Development Tools",
-      items: [
-        "Visual Studio",
-        "Visual Studio Code",
-        "Git",
-        "Postman",
-        "Swagger",
-        "IntelliJ IDEA",
-        "Microsoft SQL Server Management Studio (SSMS)",
-      ],
-    },
-  ];
-
+const TechStack = ({ stacks = [], loading = false }) => {
   return (
     <section className="p-4 rounded-md bg-bg-muted/30">
       <Heading size="md" weight="md" className="mb-4">
         Tech Stack
       </Heading>
 
-      {stacks.map((stack) => (
+      {loading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-pulse space-y-2">
+              <div className="h-3 bg-bg-muted rounded w-1/4" />
+              <div className="flex gap-2 flex-wrap">
+                {[1, 2, 3].map((j) => (
+                  <div key={j} className="h-6 w-16 bg-bg-muted rounded-full" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : stacks.length === 0 ? (
+        <p className="text-sm text-text-muted">No skills added yet.</p>
+      ) : stacks.map((stack) => (
         <div key={stack.title} className="mb-4">
           <Heading weight="md" className="mb-2 text-sm">
             {stack.title}
@@ -80,7 +45,7 @@ const TechStack = () => {
                 variants={fadeUpItem(10)}
                 transition={{ duration: 0.35, ease: "easeOut" }}
                 className="px-3 py-1 rounded-full text-xs font-semibold
-                           border border-border-default bg-white
+                           border border-border-default bg-bg-card
                            text-text-secondary"
               >
                 {item}

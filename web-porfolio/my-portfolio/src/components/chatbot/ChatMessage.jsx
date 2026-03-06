@@ -19,7 +19,7 @@ const ChatMessage = ({ messages, loading }) => {
             className={`rounded-lg px-3 py-2 max-w-[75%] text-sm ${
               msg.role === "assistant"
                 ? "bg-bg-card border"
-                : "bg-text-primary text-white"
+                : "bg-text-primary text-bg-main"
             }`}
           >
             {msg.content}
