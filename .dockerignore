@@ -1,0 +1,21 @@
+# Build artifacts
+MyPortfolioAdmin.API/MyPortfolioAdmin/bin/
+MyPortfolioAdmin.API/MyPortfolioAdmin/obj/
+
+# IDE files
+MyPortfolioAdmin.API/.vs/
+**/*.user
+
+# Secrets (never bundle into Docker image)
+MyPortfolioAdmin.API/MyPortfolioAdmin/appsettings.Development.json
+MyPortfolioAdmin.API/MyPortfolioAdmin/appsettings.Production.json
+MyPortfolioAdmin.API/MyPortfolioAdmin/secrets.json
+web-porfolio/
+
+# Git
+.git/
+.gitignore
+
+# Docs (keep the AI prompt — it's needed at runtime)
+**/*.md
+!MyPortfolioAdmin.API/MyPortfolioAdmin/Ai/portfolio-prompt.md

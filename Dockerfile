@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Restore dependencies first (layer cache friendly)
-COPY MyPortfolioAdmin/MyPortfolioAdmin.csproj MyPortfolioAdmin/
+COPY MyPortfolioAdmin.API/MyPortfolioAdmin/MyPortfolioAdmin.csproj MyPortfolioAdmin/
 RUN dotnet restore MyPortfolioAdmin/MyPortfolioAdmin.csproj
 
-# Copy everything and publish
-COPY MyPortfolioAdmin/ MyPortfolioAdmin/
+# Copy source and publish
+COPY MyPortfolioAdmin.API/MyPortfolioAdmin/ MyPortfolioAdmin/
 WORKDIR /src/MyPortfolioAdmin
 RUN dotnet publish -c Release -o /app/publish --no-restore
 
