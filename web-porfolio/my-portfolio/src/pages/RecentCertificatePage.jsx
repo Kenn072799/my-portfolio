@@ -2,25 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Heading from "../components/common/Heading";
 import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
-import { getCertifications } from "../api/certificationApi";
 
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { vibrate } from "../utils/vibrate";
+import { getCertifications } from "../api/certificationApi";
 
 const RecentCertificatePage = () => {
   const navigate = useNavigate();
   const [certifications, setCertifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     getCertifications()
       .then(setCertifications)
-      .catch(() => setCertifications([]))
+      .catch(() => setError("Failed to load certifications."))
       .finally(() => setLoading(false));
   }, []);
-
   return (
     <div className="py-4">
       {/* Back button and Heading */}
@@ -43,58 +43,95 @@ const RecentCertificatePage = () => {
           All Recent Certifications
         </Heading>
       </div>
-      <motion.div
-        variants={staggerContainer(0.12)}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.2 }}
-        className="flex flex-col sm:grid gap-4 sm:grid-cols-2"
-      >
-        {loading ? (
-          [1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="animate-pulse border border-border-default px-8 py-3 space-y-1">
-              <div className="h-4 bg-bg-muted rounded w-2/3" />
-              <div className="h-3 bg-bg-muted rounded w-1/3" />
-              <div className="h-3 bg-bg-muted rounded w-full" />
-            </div>
-          ))
-        ) : certifications.length > 0 ? (
-          certifications.map((certification, index) => (
-            <motion.div
-              key={index}
-              variants={fadeUpItem(10)}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              onClick={() => vibrate(8)}
+      {loading && (
+        <div className="flex flex-col gap-3">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
               className="relative px-8 py-3 border border-border-default
+                 flex flex-col gap-2 animate-pulse"
+            >
+              <div className="absolute left-0 top-0 h-full w-3 bg-bg-muted" />
+              <div className="h-4 w-48 rounded bg-bg-muted" />
+              <div className="h-3 w-32 rounded bg-bg-muted" />
+              <div className="h-3 w-3/4 rounded bg-bg-muted" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {error && <p className="text-sm text-red-500 mt-4">{error}</p>}
+
+      {!loading && !error && certifications.length === 0 && (
+        <motion.div
+          variants={fadeUpItem(20)}
+          initial="hidden"
+          animate="show"
+          transition={{ duration: 0.4 }}
+          className="flex flex-col items-center justify-center
+                    border border-dashed border-border-default
+                    rounded-lg py-12 text-center mt-1"
+        >
+          <span className="material-symbols-outlined text-4xl text-text-muted mb-3 verified_off">
+            verified_off
+          </span>
+          <p className="font-semibold text-text-primary">
+            No certificates available
+          </p>
+          <p className="text-sm text-text-muted mt-1 max-w-xs">
+            Certificates will appear here once they are added.
+          </p>
+        </motion.div>
+      )}
+
+      {!loading && !error && certifications.length > 0 && (
+        <motion.div
+          variants={staggerContainer(0.12)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+          className="flex flex-col gap-4"
+        >
+          {certifications.map((certification, index) => {
+            const Tag = certification.credentialUrl ? "a" : "div";
+            const linkProps = certification.credentialUrl
+              ? {
+                  href: certification.credentialUrl,
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                }
+              : {};
+
+            return (
+              <motion.div
+                key={certification.id ?? index}
+                variants={fadeUpItem(10)}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <Tag
+                  {...linkProps}
+                  onClick={() => vibrate(8)}
+                  className={`relative px-8 py-3 border border-border-default
                      before:absolute before:left-0 before:top-0 before:h-full before:w-3
                      before:bg-linear-to-b before:from-blue-400 before:via-blue-500 before:to-accent-main
-                     hover:shadow-md transition"
-            >
-              <p className="font-bold truncate" title={certification.name}>
-                {certification.name}
-              </p>
-              <p className="text-text-secondary font-semibold text-sm">
-                {certification.issuer ?? certification.from}
-              </p>
-              <p className="text-sm text-text-secondary">
-                {certification.description}
-              </p>
-            </motion.div>
-          ))
-        ) : (
-          <div className="col-span-full flex flex-col items-center justify-center
-                          border border-dashed border-border-default
-                          rounded-lg py-12 text-center">
-            <span className="material-symbols-outlined text-4xl text-text-muted mb-3">
-              verified_off
-            </span>
-            <p className="font-semibold text-text-primary">No certificates available</p>
-            <p className="text-sm text-text-muted mt-1 max-w-xs">
-              Certificates will appear here once they are added.
-            </p>
-          </div>
-        )}
-      </motion.div>
+                     hover:shadow-md transition block
+                     ${certification.credentialUrl ? "cursor-pointer" : ""}`}
+                >
+                  <p className="font-bold truncate" title={certification.name}>
+                    {certification.name}
+                  </p>
+                  <p className="text-text-secondary font-semibold text-sm">
+                    {certification.issuer}
+                  </p>
+                  <p className="text-sm text-text-secondary">
+                    {certification.description}
+                  </p>
+                </Tag>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      )}
     </div>
   );
 };

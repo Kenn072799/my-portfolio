@@ -11,7 +11,7 @@ const ChatInput = ({ onSend }) => {
   };
 
   return (
-    <div className="border-t border-border-default p-3 flex gap-2">
+    <div className="border-t border-border-default bg-bg-main p-3 flex gap-2">
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}

@@ -4,10 +4,9 @@ import CardProject from "./card/project/CardProject";
 import { Link } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { fadeUpItem, staggerContainer } from "../utils/motionVariants";
 import { vibrate } from "../utils/vibrate";
 
-const RecentProject = ({ projects = [], loading = false }) => {
+const RecentProject = ({ projects, loading, error }) => {
   return (
     <section className="max-w-4xl mx-auto p-4">
       <div className="flex items-center justify-between mb-4">
@@ -24,51 +23,72 @@ const RecentProject = ({ projects = [], loading = false }) => {
                        hover:bg-bg-muted transition"
           >
             View All
-            <span className="material-symbols-outlined">
-              arrow_forward_ios
-            </span>
+            <span className="material-symbols-outlined">arrow_forward_ios</span>
           </Link>
         )}
       </div>
 
-      <motion.div
-        variants={staggerContainer(0.12)}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.2 }}
-        className="grid gap-4 sm:grid-cols-2 mt-1"
-      >
+      <div className="grid gap-4 sm:grid-cols-2 mt-1">
         {loading ? (
-          [1, 2, 3, 4].map((i) => (
-            <div key={i} className="animate-pulse border border-border-default rounded p-4 space-y-2">
-              <div className="h-4 bg-bg-muted rounded w-3/4" />
-              <div className="h-3 bg-bg-muted rounded w-full" />
-              <div className="flex gap-2 mt-2">
-                <div className="h-5 w-12 bg-bg-muted rounded-full" />
-                <div className="h-5 w-12 bg-bg-muted rounded-full" />
+          [...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="h-full p-4 border border-border-default
+                   flex flex-col space-y-3 animate-pulse"
+            >
+              {/* Title */}
+              <div className="h-4 w-40 rounded bg-bg-muted" />
+
+              {/* Description */}
+              <div className="space-y-2">
+                <div className="h-3 w-full rounded bg-bg-muted" />
+                <div className="h-3 w-3/4 rounded bg-bg-muted" />
               </div>
+
+              {/* Tags */}
+              <div className="flex gap-2">
+                <div className="h-5 w-12 rounded bg-bg-muted" />
+                <div className="h-5 w-16 rounded bg-bg-muted" />
+                <div className="h-5 w-10 rounded bg-bg-muted" />
+              </div>
+
+              {/* Spacer */}
+              <div className="flex-1" />
+
+              {/* Link */}
+              <div className="h-6 w-24 rounded bg-bg-muted" />
             </div>
           ))
+        ) : error ? (
+          <p className="col-span-full text-sm text-red-500">{error}</p>
         ) : projects.length > 0 ? (
-          projects.slice(0, 4).map((project, index) => (
+          projects.slice(0, 4).map((project, i) => (
             <motion.div
-              key={index}
-              variants={fadeUpItem(30)}
-              transition={{ duration: 0.35, ease: "easeOut" }}
+              key={project.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: "easeOut", delay: i * 0.12 }}
               onClick={() => vibrate(8)}
             >
-              <CardProject {...project} />
+              <CardProject
+                name={project.name}
+                description={project.description}
+                link={project.repositoryUrl || project.demoUrl}
+                linkName={project.name}
+                tags={project.technologies ?? []}
+              />
             </motion.div>
           ))
         ) : (
           <motion.div
-            variants={fadeUpItem(20)}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             className="col-span-full flex flex-col items-center justify-center
-                       border border-dashed border-border-default
-                       rounded-lg py-12 text-center"
+                 border border-dashed border-border-default
+                 rounded-lg py-12 text-center"
           >
-            <span className="material-symbols-outlined text-4xl text-text-muted mb-3">
+            <span className="material-symbols-outlined text-4xl text-text-muted mb-3 work_off">
               work_off
             </span>
 
@@ -81,7 +101,7 @@ const RecentProject = ({ projects = [], loading = false }) => {
             </p>
           </motion.div>
         )}
-      </motion.div>
+      </div>
     </section>
   );
 };

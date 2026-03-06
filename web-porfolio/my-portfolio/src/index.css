@@ -84,3 +84,11 @@
 .animate-gradient {
   animation: gradientMove 3s ease-in-out infinite alternate;
 }
+
+body {
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}

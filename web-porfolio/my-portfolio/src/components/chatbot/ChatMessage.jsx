@@ -3,7 +3,7 @@ import ProfileAvatar from "./ProfileAvatar";
 
 const ChatMessage = ({ messages, loading }) => {
   return (
-    <div className="flex-1 p-4 overflow-y-auto space-y-4">
+    <div className="flex-1 py-4 overflow-y-auto space-y-4">
       {messages.map((msg, i) => (
         <div
           key={i}
@@ -18,11 +18,15 @@ const ChatMessage = ({ messages, loading }) => {
           <div
             className={`rounded-lg px-3 py-2 max-w-[75%] text-sm ${
               msg.role === "assistant"
-                ? "bg-bg-card border"
+                ? "bg-bg-card border [&_p]:mb-2 [&_p:last-child]:mb-0 [&_a]:text-accent-main [&_a]:underline [&_a]:break-all"
                 : "bg-text-primary text-bg-main"
             }`}
           >
-            {msg.content}
+            {msg.role === "assistant" ? (
+              <div dangerouslySetInnerHTML={{ __html: msg.content }} />
+            ) : (
+              msg.content
+            )}
           </div>
         </div>
       ))}

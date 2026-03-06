@@ -34,14 +34,22 @@
       .verified_off {
         font-size: 36px;
       }
+      .memory {
+        font-size: 36px;
+      }
+      .work_history {
+        font-size: 36px;
+      }
     </style>
   </head>
   <body>
-    <!-- Anti-flash: apply saved theme before React renders -->
     <script>
       (function () {
-        const t = localStorage.getItem("theme");
-        if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        if (stored === "dark" || (!stored && prefersDark)) {
           document.documentElement.classList.add("dark");
         }
       })();

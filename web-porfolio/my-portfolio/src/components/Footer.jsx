@@ -59,6 +59,11 @@ const Footer = () => {
         <p className="text-xs text-text-muted text-center">
           Built with React, Tailwind CSS, AI and ❤️
         </p>
+
+        {/* Copyright */}
+        <p className="text-xs text-text-muted">
+          © {new Date().getFullYear()} Kenneth Altes
+        </p>
       </div>
     </footer>
   );

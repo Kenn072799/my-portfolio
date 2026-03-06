@@ -5,7 +5,6 @@ import {
   AiFillLinkedin,
   AiOutlineMail,
 } from "react-icons/ai";
-import { MdLightMode, MdDarkMode } from "react-icons/md";
 import ProfilePicture from "../assets/FormalAttire1x1.png";
 import ProfilePictureDark from "../assets/FormalAttire1x1_dark.png";
 import { vibrate } from "../utils/vibrate";
@@ -37,17 +36,25 @@ const Header = () => {
 
   return (
     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 py-4">
-      {/* Dark mode toggle — mobile top */}
+      {/* Dark mode toggle – mobile top */}
       <div className="flex justify-end w-full sm:hidden">
         <button
-          onClick={() => { toggle(); vibrate(8); }}
-          className="p-2 rounded-md hover:bg-bg-muted transition text-text-secondary"
-          aria-label="Toggle dark mode"
+          onClick={() => {
+            toggle();
+            vibrate(8);
+          }}
+          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          className="p-2 border border-border-default bg-bg-card hover:bg-bg-muted
+                     transition flex items-center justify-center cursor-pointer rounded"
         >
-          {isDark ? <MdLightMode size={20} /> : <MdDarkMode size={20} />}
+          <span
+            className="material-symbols-outlined text-text-primary"
+            style={{ fontSize: 20 }}
+          >
+            {isDark ? "light_mode" : "dark_mode"}
+          </span>
         </button>
       </div>
-
       {/* Avatar */}
       <img
         src={isDark ? ProfilePictureDark : ProfilePicture}
@@ -57,16 +64,24 @@ const Header = () => {
 
       {/* Content */}
       <div className="flex flex-col gap-1 text-center sm:text-left w-full">
-        {/* Name row — desktop toggle sits on the right */}
         <div className="flex items-center justify-center sm:justify-between">
           <p className="text-2xl font-bold text-text-primary">Kenneth Altes</p>
-          {/* Dark mode toggle — desktop */}
+          {/* Dark mode toggle – desktop only */}
           <button
-            onClick={() => { toggle(); vibrate(8); }}
-            className="hidden sm:flex p-2 rounded-md hover:bg-bg-muted transition text-text-secondary"
-            aria-label="Toggle dark mode"
+            onClick={() => {
+              toggle();
+              vibrate(8);
+            }}
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="hidden sm:flex p-2 border border-border-default bg-bg-card hover:bg-bg-muted
+                       transition items-center justify-center cursor-pointer rounded"
           >
-            {isDark ? <MdLightMode size={20} /> : <MdDarkMode size={20} />}
+            <span
+              className="material-symbols-outlined text-text-primary"
+              style={{ fontSize: 20 }}
+            >
+              {isDark ? "light_mode" : "dark_mode"}
+            </span>
           </button>
         </div>
 
