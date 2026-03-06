@@ -15,6 +15,23 @@ builder.Services.AddHttpClient<IpGeolocationService>();
 
 var app = builder.Build();
 
+// Auto-apply migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        db.Database.Migrate();
+        logger.LogInformation("Database migrations applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Failed to apply database migrations.");
+        throw;
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
