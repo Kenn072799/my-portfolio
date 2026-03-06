@@ -2,6 +2,8 @@
 using MyPortfolioAdmin.Models.Analytics;
 using MyPortfolioAdmin.Models.Entities;
 
+namespace MyPortfolioAdmin.Data;
+
 public class PortfolioDbContext : DbContext
 {
     public PortfolioDbContext(DbContextOptions<PortfolioDbContext> options) : base(options)

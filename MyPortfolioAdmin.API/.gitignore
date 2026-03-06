@@ -1,0 +1,22 @@
+## Visual Studio / IDE artifacts
+.vs/
+*.user
+*.http
+
+## .NET build output
+bin/
+obj/
+
+## Secrets & environment-specific config (never commit these)
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
+secrets.json
+
+## Logs
+*.log
+logs/
+
+## OS
+.DS_Store
+Thumbs.db

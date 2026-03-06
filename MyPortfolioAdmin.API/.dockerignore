@@ -1,0 +1,20 @@
+# Build artifacts
+**/bin/
+**/obj/
+
+# IDE files
+.vs/
+**/*.user
+
+# Secrets (never bundle into Docker image)
+**/appsettings.Development.json
+**/appsettings.Production.json
+**/secrets.json
+
+# Git
+.git/
+.gitignore
+
+# Docs (but NOT the runtime AI prompt)
+**/*.md
+!MyPortfolioAdmin/Ai/portfolio-prompt.md
