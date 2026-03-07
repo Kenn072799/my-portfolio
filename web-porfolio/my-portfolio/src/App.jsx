@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import MainLayout from "./layout/MainLayout";
@@ -12,8 +13,13 @@ import Experience from "./admin/pages/Experience";
 import Certifications from "./admin/pages/Certifications";
 import Analytics from "./admin/pages/Analytics";
 import RequireAuth from "./admin/components/RequireAuth";
+import { trackVisitor } from "./api/visitorApi";
 
 function App() {
+  useEffect(() => {
+    trackVisitor();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
