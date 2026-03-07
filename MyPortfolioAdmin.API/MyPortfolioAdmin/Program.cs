@@ -54,6 +54,9 @@ app.UseRateLimiter();
 app.UseAuthorization();
 app.MapControllers();
 
+// Lightweight health check — used by uptime monitors to keep the server alive on Render free tier
+app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
+
 // Render injects PORT at runtime; fall back to 8080 locally
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Run($"http://0.0.0.0:{port}");

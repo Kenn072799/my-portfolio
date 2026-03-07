@@ -8,7 +8,8 @@ import RecentCertification from "../components/RecentCertification";
 import { usePortfolioData } from "../hooks/usePortfolioData";
 
 const Home = () => {
-  const { projects, stacks, experiences, certifications, loading } = usePortfolioData();
+  const { projects, stacks, experiences, certifications, loading } =
+    usePortfolioData();
 
   return (
     <div>

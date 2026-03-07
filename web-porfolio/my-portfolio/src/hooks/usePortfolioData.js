@@ -15,6 +15,18 @@ const groupSkills = (skills) =>
     }, {}),
   );
 
+// Silently retries fn() until it resolves or maxRetries is exhausted.
+const fetchWithRetry = async (fn, maxRetries = 8, delayMs = 3000) => {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+};
+
 export const usePortfolioData = () => {
   const [data, setData] = useState({
     projects: [],
@@ -29,10 +41,10 @@ export const usePortfolioData = () => {
     const loadAll = async () => {
       const [projects, skills, experiences, certifications] =
         await Promise.allSettled([
-          getProjects(),
-          getSkills(),
-          getExperiences(),
-          getCertifications(),
+          fetchWithRetry(getProjects),
+          fetchWithRetry(getSkills),
+          fetchWithRetry(getExperiences),
+          fetchWithRetry(getCertifications),
         ]);
 
       setData({
