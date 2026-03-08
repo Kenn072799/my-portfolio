@@ -28,7 +28,7 @@ const RecentProject = ({ projects, loading, error }) => {
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 mt-1">
+      <div className="grid gap-4 mt-1">
         {loading ? (
           [...Array(4)].map((_, i) => (
             <div
@@ -73,8 +73,8 @@ const RecentProject = ({ projects, loading, error }) => {
               <CardProject
                 name={project.name}
                 description={project.description}
-                link={project.repositoryUrl || project.demoUrl}
-                linkName={project.name}
+                repoUrl={project.repositoryUrl}
+                demoUrl={project.demoUrl}
                 tags={project.technologies ?? []}
               />
             </motion.div>

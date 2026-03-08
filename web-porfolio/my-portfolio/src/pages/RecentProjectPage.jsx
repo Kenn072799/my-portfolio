@@ -9,14 +9,6 @@ import { motion } from "framer-motion";
 import { vibrate } from "../utils/vibrate";
 import { getProjects } from "../api/projectApi";
 
-const getLinkName = (url) => {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
-};
-
 const RecentProjectPage = () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
@@ -54,7 +46,7 @@ const RecentProjectPage = () => {
         </Heading>
       </div>
       {loading && (
-        <div className="grid gap-4 sm:grid-cols-2 mt-1">
+        <div className="grid gap-4 mt-1">
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
@@ -108,7 +100,7 @@ const RecentProjectPage = () => {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="grid gap-4 sm:grid-cols-2 mt-1"
+          className="grid gap-4 mt-1"
         >
           {projects.map((project, index) => (
             <motion.div
@@ -120,11 +112,8 @@ const RecentProjectPage = () => {
               <CardProject
                 name={project.name}
                 description={project.description}
-                link={project.demoUrl || project.repositoryUrl || "#"}
-                linkName={
-                  getLinkName(project.demoUrl || project.repositoryUrl || "") ||
-                  "View Project"
-                }
+                repoUrl={project.repositoryUrl}
+                demoUrl={project.demoUrl}
                 tags={
                   Array.isArray(project.technologies)
                     ? project.technologies
