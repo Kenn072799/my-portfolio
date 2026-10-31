@@ -1,33 +1,9 @@
-import React, { useState } from "react";
-
-const ChatInput = ({ onSend }) => {
-  const [input, setInput] = useState("");
-
-  const send = () => {
-    if (!input.trim()) return;
-
-    onSend(input);
-    setInput("");
-  };
-
-  return (
-    <div className="border-t border-border-default bg-bg-main p-3 flex gap-2">
-      <input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && send()}
-        placeholder="Ask about Kenneth..."
-        className="flex-1 border border-border-default rounded px-3 py-2 text-sm bg-bg-main text-text-primary placeholder:text-text-muted focus:outline-none"
-      />
-
-      <button
-        onClick={send}
-        className="bg-text-primary text-bg-main px-3 py-2 rounded text-sm hover:opacity-90 transition cursor-pointer"
-      >
-        Send
-      </button>
-    </div>
-  );
-};
-
-export default ChatInput;
+﻿import { FiArrowUp } from 'react-icons/fi';
+export default function ChatInput({ onSend, disabled = false, value, onValueChange }) {
+  function submit(event) {
+    event.preventDefault();
+    if (!value.trim() || disabled) return;
+    onSend(value); onValueChange('');
+  }
+  return <form className="chat-input" onSubmit={submit}><label className="sr-only" htmlFor="assistant-message">Your question for Kenneth’s assistant</label><input id="assistant-message" value={value} onChange={(event) => onValueChange(event.target.value)} disabled={disabled} autoComplete="off" maxLength={2000} /><button type="submit" disabled={disabled || !value.trim()} aria-label="Send message"><FiArrowUp /></button></form>;
+}

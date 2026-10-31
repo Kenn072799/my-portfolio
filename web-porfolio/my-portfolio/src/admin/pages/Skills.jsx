@@ -47,6 +47,7 @@ const emptyForm = {
 export default function Skills() {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
@@ -57,8 +58,11 @@ export default function Skills() {
   const fetchSkills = async () => {
     setLoading(true);
     try {
-      const res = await getSkills();
+      setError('');
+      const res = await getSkills({ all: true });
       setSkills(res.data ?? []);
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -88,6 +92,7 @@ export default function Skills() {
     e.preventDefault();
     setSaving(true);
     try {
+      setError('');
       if (editTarget) {
         await updateSkill(editTarget.id, {
           ...form,
@@ -98,8 +103,8 @@ export default function Skills() {
       }
       setModalOpen(false);
       await fetchSkills();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setSaving(false);
     }
@@ -108,9 +113,12 @@ export default function Skills() {
   const confirmDelete = async () => {
     setDeleting(true);
     try {
+      setError('');
       await deleteSkill(deleteTarget.id);
       setDeleteTarget(null);
       await fetchSkills();
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setDeleting(false);
     }
@@ -126,9 +134,9 @@ export default function Skills() {
     const label = proficiencyToLabel(val);
     const map = {
       Beginner: "bg-bg-muted text-text-secondary",
-      Intermediate: "bg-blue-50 text-blue-700",
-      Advanced: "bg-purple-50 text-purple-700",
-      Expert: "bg-green-50 text-green-700",
+      Intermediate: "bg-cyan-400/10 text-cyan-300",
+      Advanced: "bg-indigo-400/10 text-indigo-300",
+      Expert: "bg-emerald-400/10 text-emerald-300",
     };
     return (
       <span
@@ -153,6 +161,7 @@ export default function Skills() {
         action={{ label: "Add Skill", onClick: openAdd }}
       />
 
+      {error && !modalOpen && !deleteTarget && <div className="admin-error admin-operation-error" role="alert">{error}<button type="button" aria-label="Dismiss error" onClick={() => setError('')}>×</button></div>}
       {loading ? (
         <SkeletonTable />
       ) : Object.keys(grouped).length === 0 ? (
@@ -183,6 +192,7 @@ export default function Skills() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
         loading={saving}
+        error={error}
       >
         <FormField label="Name" required>
           <FormInput
@@ -214,6 +224,7 @@ export default function Skills() {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
         loading={deleting}
+        error={error}
       />
     </div>
   );

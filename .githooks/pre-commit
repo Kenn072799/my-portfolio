@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+if command -v node >/dev/null 2>&1; then
+  exec node scripts/security-scan.mjs --staged
+fi
+runtime=$(git config --local --get security.nodePath || true)
+if [ -n "$runtime" ] && [ -x "$runtime" ]; then
+  exec "$runtime" scripts/security-scan.mjs --staged
+fi
+printf '%s\n' 'Commit blocked: Node.js is required to run the repository security scan.' >&2
+exit 1

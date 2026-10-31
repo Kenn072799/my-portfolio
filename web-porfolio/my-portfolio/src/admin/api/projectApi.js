@@ -1,10 +1,7 @@
-import axios from "../../api/axios";
+import { readCollection } from "./readCollection";
 import adminAxios from "./adminAxios";
 
-export const getProjects = async ({ page = 1, pageSize = 50 } = {}) => {
-  const res = await axios.get("/api/projects", { params: { page, pageSize } });
-  return res.data;
-};
+export const getProjects = (options) => readCollection("/api/projects", options);
 
 export const createProject = async (data) => {
   const res = await adminAxios.post("/api/projects", data);

@@ -1,81 +1,48 @@
-import { useState, useEffect } from "react";
-import { getProjects } from "../api/projectApi";
-import { getSkills } from "../api/skillApi";
-import { getExperiences } from "../api/experienceApi";
-import { getCertifications } from "../api/certificationApi";
+﻿import { useState, useEffect } from 'react';
+import { getProjects } from '../api/projectApi';
+import { getSkills } from '../api/skillApi';
+import { getExperiences } from '../api/experienceApi';
+import { getCertifications } from '../api/certificationApi';
+import { readSnapshot, saveSnapshot, loadCollection } from './portfolioCache';
 
-const groupSkills = (skills) =>
-  Object.values(
-    skills.reduce((acc, skill) => {
-      if (!acc[skill.category]) {
-        acc[skill.category] = { title: skill.category, items: [] };
-      }
-      acc[skill.category].items.push(skill.name);
-      return acc;
-    }, {}),
-  );
-
-// Silently retries fn() until it resolves or maxRetries is exhausted.
-const fetchWithRetry = async (fn, maxRetries = 8, delayMs = 3000) => {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      await new Promise((r) => setTimeout(r, delayMs));
-    }
-  }
-};
+const groupSkills = (skills) => Object.values(skills.reduce((groups, skill) => {
+  const category = skill.category || 'Additional technologies';
+  if (!groups[category]) groups[category] = { title: category, items: [] };
+  groups[category].items.push(skill.name);
+  return groups;
+}, {}));
 
 export const usePortfolioData = () => {
-  const [data, setData] = useState({
-    projects: [],
-    stacks: [],
-    experiences: [],
-    certifications: [],
-  });
-  const [loading, setLoading] = useState(true);
+  const [snapshot] = useState(readSnapshot);
+  const [data, setData] = useState(/** @type {{ projects: import('../data/types').Project[], stacks: import('../data/types').SkillGroup[], experiences: import('../data/types').Experience[], certifications: import('../data/types').Certification[] }} */ ({ projects: [], stacks: [], experiences: [], certifications: [], ...snapshot }));
+  const [loaded, setLoaded] = useState(/** @type {Record<string, boolean>} */ (Object.fromEntries(Object.keys(snapshot).map((key) => [key, true]))));
+  const [pendingKeys, setPendingKeys] = useState(['projects', 'stacks', 'experiences', 'certifications']);
+  const [attempt, setAttempt] = useState(0);
   const [errors, setErrors] = useState({});
-
   useEffect(() => {
-    const loadAll = async () => {
-      const [projects, skills, experiences, certifications] =
-        await Promise.allSettled([
-          fetchWithRetry(getProjects),
-          fetchWithRetry(getSkills),
-          fetchWithRetry(getExperiences),
-          fetchWithRetry(getCertifications),
-        ]);
-
-      setData({
-        projects: projects.status === "fulfilled" ? projects.value : [],
-        stacks: skills.status === "fulfilled" ? groupSkills(skills.value) : [],
-        experiences:
-          experiences.status === "fulfilled" ? experiences.value : [],
-        certifications:
-          certifications.status === "fulfilled" ? certifications.value : [],
-      });
-
-      setErrors({
-        ...(projects.status === "rejected" && {
-          projects: "Unable to load projects",
-        }),
-        ...(skills.status === "rejected" && {
-          stacks: "Unable to load tech stack",
-        }),
-        ...(experiences.status === "rejected" && {
-          experiences: "Unable to load experience",
-        }),
-        ...(certifications.status === "rejected" && {
-          certifications: "Unable to load certifications",
-        }),
-      });
-
-      setLoading(false);
-    };
-
-    loadAll();
-  }, []);
-
-  return { ...data, loading, errors };
+    let active = true;
+    const endpoints = [
+      ['projects', getProjects], ['stacks', getSkills],
+      ['experiences', getExperiences], ['certifications', getCertifications],
+    ];
+    endpoints.forEach(async ([key, fetchData]) => {
+      try {
+        const result = await loadCollection(key, fetchData);
+        const records = key === 'stacks' ? groupSkills(result) : result;
+        saveSnapshot(key, records);
+        if (active) {
+          setData((previous) => ({ ...previous, [key]: records }));
+          setLoaded((previous) => ({ ...previous, [key]: true }));
+        }
+      } catch {
+        if (active) setErrors((previous) => ({ ...previous, [key]: `Unable to load ${key}` }));
+      } finally {
+        if (active) setPendingKeys((previous) => previous.filter((item) => item !== key));
+      }
+    });
+    return () => { active = false; };
+  }, [attempt]);
+  return { ...data, loaded, pendingKeys, loading: pendingKeys.length > 0, errors, reload: () => {
+    setErrors({}); setPendingKeys(['projects', 'stacks', 'experiences', 'certifications']); setAttempt((value) => value + 1);
+  } };
 };

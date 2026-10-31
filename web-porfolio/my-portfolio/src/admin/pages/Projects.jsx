@@ -28,6 +28,7 @@ const emptyForm = {
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
@@ -38,8 +39,11 @@ export default function Projects() {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const res = await getProjects({ page: 1, pageSize: 100 });
+      setError('');
+      const res = await getProjects({ all: true });
       setProjects(res.data ?? []);
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -75,6 +79,7 @@ export default function Projects() {
     e.preventDefault();
     setSaving(true);
     try {
+      setError('');
       const payload = {
         ...form,
         longDescription: form.longDescription.trim() || null,
@@ -92,8 +97,8 @@ export default function Projects() {
       }
       setModalOpen(false);
       await fetchProjects();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setSaving(false);
     }
@@ -102,9 +107,12 @@ export default function Projects() {
   const confirmDelete = async () => {
     setDeleting(true);
     try {
+      setError('');
       await deleteProject(deleteTarget.id);
       setDeleteTarget(null);
       await fetchProjects();
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setDeleting(false);
     }
@@ -122,7 +130,7 @@ export default function Projects() {
             {arr.slice(0, 4).map((t) => (
               <span
                 key={t}
-                className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full"
+                className="bg-cyan-400/10 text-cyan-300 text-xs px-2 py-0.5 rounded-full"
               >
                 {t.trim()}
               </span>
@@ -139,7 +147,7 @@ export default function Projects() {
       label: "Featured",
       render: (val) => (
         <span
-          className={`text-xs font-medium px-2 py-0.5 rounded-full ${val ? "bg-green-50 text-green-700" : "bg-bg-muted text-text-muted"}`}
+          className={`text-xs font-medium px-2 py-0.5 rounded-full ${val ? "bg-emerald-400/10 text-emerald-300" : "bg-bg-muted text-text-muted"}`}
         >
           {val ? "Yes" : "No"}
         </span>
@@ -160,6 +168,7 @@ export default function Projects() {
         action={{ label: "Add Project", onClick: openAdd }}
       />
 
+      {error && !modalOpen && !deleteTarget && <div className="admin-error admin-operation-error" role="alert">{error}<button type="button" aria-label="Dismiss error" onClick={() => setError('')}>×</button></div>}
       {loading ? (
         <SkeletonTable />
       ) : (
@@ -179,6 +188,7 @@ export default function Projects() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
         loading={saving}
+        error={error}
       >
         <FormField label="Name" required>
           <FormInput
@@ -248,6 +258,7 @@ export default function Projects() {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
         loading={deleting}
+        error={error}
       />
     </div>
   );

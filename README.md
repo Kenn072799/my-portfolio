@@ -149,9 +149,10 @@ code/
 2. Create a `.env` file:
 
    ```env
-   VITE_API_URL=http://localhost:5053
-   VITE_ADMIN_API_KEY=your-secret-admin-key
+   VITE_API_URL=http://localhost:8080
    ```
+
+   Keep admin keys in the backend. Enter the backend's `AdminApiKey` at `/admin/login`; never put it in a `VITE_` variable.
 
 3. Install dependencies and start the dev server:
    ```bash
@@ -201,7 +202,7 @@ A `/health` endpoint is available for uptime monitoring (no auth required).
 ### Frontend → Vercel
 
 1. Import the `web-porfolio/my-portfolio` directory into Vercel.
-2. Set environment variables (`VITE_API_URL`, `VITE_ADMIN_API_KEY`) in the Vercel dashboard.
+2. Set the public `VITE_API_URL` environment variable in the Vercel dashboard. Do not set admin keys or database credentials in frontend variables.
 3. Deploy.
 
 ### Backend → Render

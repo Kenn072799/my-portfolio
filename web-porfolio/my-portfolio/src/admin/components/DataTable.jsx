@@ -1,77 +1,8 @@
-export default function DataTable({
-  columns,
-  data,
-  onEdit,
-  onDelete,
-  emptyMessage = "No records found.",
-}) {
-  if (!data || data.length === 0) {
-    return (
-      <div className="bg-bg-card rounded-xl border border-border-default shadow-sm p-12 text-center">
-        <p className="text-text-muted text-sm">{emptyMessage}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-bg-card rounded-xl border border-border-default shadow-sm overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border-default bg-bg-muted/30">
-              {columns.map((col) => (
-                <th
-                  key={col.key}
-                  className="text-left text-xs font-semibold text-text-muted uppercase tracking-wide px-5 py-3"
-                >
-                  {col.label}
-                </th>
-              ))}
-              {(onEdit || onDelete) && (
-                <th className="text-right text-xs font-semibold text-text-muted uppercase tracking-wide px-5 py-3">
-                  Actions
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border-default">
-            {data.map((row) => (
-              <tr
-                key={row.id}
-                className="hover:bg-bg-muted/40 transition-colors"
-              >
-                {columns.map((col) => (
-                  <td key={col.key} className="px-5 py-3 text-text-primary">
-                    {col.render
-                      ? col.render(row[col.key], row)
-                      : (row[col.key] ?? "—")}
-                  </td>
-                ))}
-                {(onEdit || onDelete) && (
-                  <td className="px-5 py-3 text-right space-x-2">
-                    {onEdit && (
-                      <button
-                        onClick={() => onEdit(row)}
-                        className="text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors"
-                      >
-                        Edit
-                      </button>
-                    )}
-                    {onDelete && (
-                      <button
-                        onClick={() => onDelete(row)}
-                        className="text-red-500 hover:text-red-700 text-xs font-medium px-2 py-1 rounded hover:bg-red-50 transition-colors"
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+import { useId, useState } from 'react';
+import { FiSearch, FiEdit2, FiTrash2, FiInbox } from 'react-icons/fi';
+export default function DataTable({ columns, data = [], onEdit, onDelete, emptyMessage = 'No records found.' }) {
+  const [query, setQuery] = useState('');
+  const search = useId();
+  const records = data.filter((row) => columns.some((column) => String(row[column.key] ?? '').toLowerCase().includes(query.trim().toLowerCase())));
+  return <div className="admin-table-panel"><div className="admin-table-toolbar"><label htmlFor={search}><FiSearch /><span className="sr-only">Search records</span><input id={search} placeholder="Search records…" value={query} onChange={(event) => setQuery(event.target.value)} /></label><span role="status">{records.length} {records.length === 1 ? 'record' : 'records'}</span></div>{records.length === 0 ? <div className="admin-empty"><FiInbox /><h2>{query ? 'No matching records' : 'A fresh start.'}</h2><p>{query ? 'Try a different search term.' : emptyMessage}</p></div> : <div className="admin-table-scroll" role="region" aria-label="Scrollable records table" tabIndex={0}><table><caption className="sr-only">Portfolio records</caption><thead><tr>{columns.map((column) => <th scope="col" key={column.key}>{column.label}</th>)}{(onEdit || onDelete) && <th scope="col" className="table-actions-heading">Actions</th>}</tr></thead><tbody>{records.map((row) => <tr key={row.id}>{columns.map((column) => <td key={column.key}>{column.render ? column.render(row[column.key], row) : row[column.key] ?? '—'}</td>)}{(onEdit || onDelete) && <td className="table-actions">{onEdit && <button type="button" aria-label={`Edit ${row.name || row.title || 'record'}`} onClick={() => onEdit(row)}><FiEdit2 /> Edit</button>}{onDelete && <button type="button" className="table-delete" aria-label={`Delete ${row.name || row.title || 'record'}`} onClick={() => onDelete(row)}><FiTrash2 /> Delete</button>}</td>}</tr>)}</tbody></table></div>}</div>;
 }

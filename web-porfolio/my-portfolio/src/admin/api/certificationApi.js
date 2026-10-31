@@ -1,12 +1,7 @@
-import axios from "../../api/axios";
+import { readCollection } from "./readCollection";
 import adminAxios from "./adminAxios";
 
-export const getCertifications = async ({ page = 1, pageSize = 50 } = {}) => {
-  const res = await axios.get("/api/certifications", {
-    params: { page, pageSize },
-  });
-  return res.data;
-};
+export const getCertifications = (options) => readCollection("/api/certifications", options);
 
 export const createCertification = async (data) => {
   const res = await adminAxios.post("/api/certifications", data);

@@ -1,0 +1,51 @@
+﻿# Local environment and credentials
+.env
+.env.*
+!.env.example
+!.env.template
+**/appsettings.*.json
+!**/appsettings.example.json
+!**/appsettings.template.json
+secrets.json
+.npmrc
+*.pem
+*.key
+*.pfx
+*.p12
+*.jks
+*.keystore
+
+# IDE state and local request files
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.http
+*.swp
+*.swo
+
+# Build, dependency, and QA output
+node_modules/
+bin/
+obj/
+dist/
+dist-ssr/
+coverage/
+test-results/
+playwright-report/
+.tools/
+*.log
+logs/
+
+# Local databases, exports, and backups
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.bak
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db

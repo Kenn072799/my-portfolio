@@ -1,11 +1,6 @@
-import axios from "axios";
+﻿import axios from 'axios';
+import { API_BASE_URL } from './config';
 
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://localhost:7197",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 20000,
-});
-
+// Render may need more than 20 seconds to wake a sleeping instance.
+const axiosInstance = axios.create({ baseURL: API_BASE_URL, timeout: 60000 });
 export default axiosInstance;

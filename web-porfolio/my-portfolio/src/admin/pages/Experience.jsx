@@ -29,6 +29,7 @@ const emptyForm = {
 export default function Experience() {
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
@@ -39,8 +40,11 @@ export default function Experience() {
   const fetchExperiences = async () => {
     setLoading(true);
     try {
-      const res = await getExperiences({ page: 1, pageSize: 100 });
+      setError('');
+      const res = await getExperiences({ all: true });
       setExperiences(res.data ?? []);
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -80,6 +84,7 @@ export default function Experience() {
     e.preventDefault();
     setSaving(true);
     try {
+      setError('');
       const payload = {
         ...form,
         technologies: form.technologies
@@ -95,8 +100,8 @@ export default function Experience() {
       }
       setModalOpen(false);
       await fetchExperiences();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setSaving(false);
     }
@@ -105,9 +110,12 @@ export default function Experience() {
   const confirmDelete = async () => {
     setDeleting(true);
     try {
+      setError('');
       await deleteExperience(deleteTarget.id);
       setDeleteTarget(null);
       await fetchExperiences();
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setDeleting(false);
     }
@@ -143,7 +151,7 @@ export default function Experience() {
       label: "Current",
       render: (val) => (
         <span
-          className={`text-xs font-medium px-2 py-0.5 rounded-full ${val ? "bg-green-50 text-green-700" : "bg-bg-muted text-text-muted"}`}
+          className={`text-xs font-medium px-2 py-0.5 rounded-full ${val ? "bg-emerald-400/10 text-emerald-300" : "bg-bg-muted text-text-muted"}`}
         >
           {val ? "Yes" : "No"}
         </span>
@@ -159,6 +167,7 @@ export default function Experience() {
         action={{ label: "Add Experience", onClick: openAdd }}
       />
 
+      {error && !modalOpen && !deleteTarget && <div className="admin-error admin-operation-error" role="alert">{error}<button type="button" aria-label="Dismiss error" onClick={() => setError('')}>×</button></div>}
       {loading ? (
         <SkeletonTable />
       ) : (
@@ -177,6 +186,7 @@ export default function Experience() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
         loading={saving}
+        error={error}
       >
         <FormField label="Title" required>
           <FormInput
@@ -258,6 +268,7 @@ export default function Experience() {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
         loading={deleting}
+        error={error}
       />
     </div>
   );

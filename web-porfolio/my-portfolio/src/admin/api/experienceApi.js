@@ -1,12 +1,7 @@
-import axios from "../../api/axios";
+import { readCollection } from "./readCollection";
 import adminAxios from "./adminAxios";
 
-export const getExperiences = async ({ page = 1, pageSize = 50 } = {}) => {
-  const res = await axios.get("/api/experiences", {
-    params: { page, pageSize },
-  });
-  return res.data;
-};
+export const getExperiences = (options) => readCollection("/api/experiences", options);
 
 export const createExperience = async (data) => {
   const res = await adminAxios.post("/api/experiences", data);

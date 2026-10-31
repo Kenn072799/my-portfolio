@@ -1,12 +1,7 @@
-import axios from "./axios";
+﻿import axios from './axios';
+import { fetchAllPages } from './fetchAllPages';
 
-export const getProjects = async () => {
-  const response = await axios.get("/api/projects", {
-    params: {
-      page: 1,
-      pageSize: 10,
-    },
-  });
-
-  return response.data.data; // return the array directly
-};
+export const getProjects = () => fetchAllPages(async (page) => {
+  const response = await axios.get('/api/projects', { params: { page, pageSize: 50 } });
+  return response.data;
+});

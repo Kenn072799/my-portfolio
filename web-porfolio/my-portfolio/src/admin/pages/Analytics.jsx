@@ -1,286 +1,51 @@
-import { useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import {
-  getAnalyticsSummary,
-  getTopQuestions,
-  getAllVisitors,
-} from "../api/analyticsApi";
-import StatCard from "../components/StatCard";
-import SkeletonCard, { SkeletonTable } from "../components/SkeletonCard";
-
-function parseUserAgent(ua = "") {
-  if (/edg/i.test(ua)) return "Edge";
-  if (/chrome/i.test(ua)) return "Chrome";
-  if (/firefox/i.test(ua)) return "Firefox";
-  if (/safari/i.test(ua)) return "Safari";
-  if (/opera|opr/i.test(ua)) return "Opera";
-  return "Other";
+import { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { getAnalyticsSummary, getTopQuestions, getAllVisitors } from '../api/analyticsApi';
+import StatCard from '../components/StatCard';
+import SkeletonCard, { SkeletonTable } from '../components/SkeletonCard';
+import PageHeader from '../components/PageHeader';
+import DataTable from '../components/DataTable';
+function browserName(agent = '') {
+  if (/edg/i.test(agent)) return 'Edge';
+  if (/opera|opr/i.test(agent)) return 'Opera';
+  if (/chrome/i.test(agent)) return 'Chrome';
+  if (/firefox/i.test(agent)) return 'Firefox';
+  if (/safari/i.test(agent)) return 'Safari';
+  return 'Other';
 }
-
-function todayUTC() {
-  const d = new Date();
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+function localDate(value) {
+  return new Date(value).toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
 }
-
 export default function Analytics() {
   const [summary, setSummary] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [visitors, setVisitors] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    const load = async () => {
+    let active = true;
+    async function load() {
       try {
-        const [s, q, v] = await Promise.all([
-          getAnalyticsSummary(),
-          getTopQuestions(),
-          getAllVisitors(),
-        ]);
-        setSummary(s);
-        setQuestions(q);
-        setVisitors(v);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
-
-  // Visitors today
-  const today = todayUTC();
-  const visitorsToday = visitors.filter((v) =>
-    (v.visitedAt ?? "").startsWith(today),
-  ).length;
-
-  // Browser breakdown
-  const browserMap = visitors.reduce((acc, v) => {
-    const b = parseUserAgent(v.userAgent);
-    acc[b] = (acc[b] || 0) + 1;
-    return acc;
-  }, {});
-  const browserData = Object.entries(browserMap)
-    .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count);
-
-  // Top 10 questions chart
-  const topQuestionsChart = questions.slice(0, 10).map((q) => ({
-    question:
-      q.question?.length > 30 ? q.question.slice(0, 30) + "…" : q.question,
-    count: q.count,
-  }));
-
-  return (
-    <div className="space-y-6">
-      {/* Summary cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {loading ? (
-          <SkeletonCard count={3} />
-        ) : (
-          <>
-            <StatCard
-              title="Total Visitors"
-              value={summary?.totalVisitors}
-              icon="👥"
-              color="blue"
-            />
-            <StatCard
-              title="Visitors Today"
-              value={visitorsToday}
-              icon="🌐"
-              color="green"
-            />
-            <StatCard
-              title="AI Questions"
-              value={summary?.totalChatMessages}
-              icon="🤖"
-              color="purple"
-            />
-          </>
-        )}
-      </div>
-
-      {/* Charts row */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        {/* Browser breakdown */}
-        <div className="bg-bg-card rounded-xl border border-border-default shadow-sm p-5">
-          <h3 className="text-sm font-semibold text-text-primary mb-4">
-            Browser Breakdown
-          </h3>
-          {loading ? (
-            <SkeletonTable />
-          ) : browserData.length === 0 ? (
-            <p className="text-sm text-text-muted text-center py-8">
-              No visitor data yet.
-            </p>
-          ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart
-                data={browserData}
-                margin={{ top: 0, right: 10, left: -20, bottom: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-
-        {/* Top questions chart */}
-        <div className="bg-bg-card rounded-xl border border-border-default shadow-sm p-5">
-          <h3 className="text-sm font-semibold text-text-primary mb-4">
-            Top AI Questions
-          </h3>
-          {loading ? (
-            <SkeletonTable />
-          ) : topQuestionsChart.length === 0 ? (
-            <p className="text-sm text-text-muted text-center py-8">
-              No chatbot questions yet.
-            </p>
-          ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart
-                data={topQuestionsChart}
-                layout="vertical"
-                margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis
-                  type="number"
-                  allowDecimals={false}
-                  tick={{ fontSize: 11 }}
-                />
-                <YAxis
-                  dataKey="question"
-                  type="category"
-                  width={150}
-                  tick={{ fontSize: 11 }}
-                />
-                <Tooltip />
-                <Bar dataKey="count" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-      </div>
-
-      {/* Questions table */}
-      <div className="bg-bg-card rounded-xl border border-border-default shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-border-default">
-          <h3 className="text-sm font-semibold text-text-primary">
-            All Chatbot Questions
-          </h3>
-        </div>
-        {loading ? (
-          <div className="p-5">
-            <SkeletonTable />
-          </div>
-        ) : questions.length === 0 ? (
-          <p className="text-sm text-text-muted text-center py-8">
-            No questions yet.
-          </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-bg-muted/30 border-b border-border-default">
-                  <th className="text-left text-xs font-semibold text-text-muted uppercase tracking-wide px-5 py-3">
-                    Question
-                  </th>
-                  <th className="text-right text-xs font-semibold text-text-muted uppercase tracking-wide px-5 py-3">
-                    Count
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border-default">
-                {questions.map((q, i) => (
-                  <tr key={q.id ?? i} className="hover:bg-bg-muted/40">
-                    <td className="px-5 py-3 text-text-primary">
-                      {q.question}
-                    </td>
-                    <td className="px-5 py-3 text-right">
-                      <span className="bg-purple-50 text-purple-700 text-xs font-medium px-2 py-0.5 rounded-full">
-                        {q.count}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* Visitors table */}
-      <div className="bg-bg-card rounded-xl border border-border-default shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-border-default">
-          <h3 className="text-sm font-semibold text-text-primary">
-            Recent Visitors
-          </h3>
-        </div>
-        {loading ? (
-          <div className="p-5">
-            <SkeletonTable />
-          </div>
-        ) : visitors.length === 0 ? (
-          <p className="text-sm text-text-muted text-center py-8">
-            No visitors yet.
-          </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-bg-muted/30 border-b border-border-default">
-                  <th className="text-left text-xs font-semibold text-text-muted uppercase tracking-wide px-5 py-3">
-                    Browser
-                  </th>
-                  <th className="text-left text-xs font-semibold text-text-muted uppercase tracking-wide px-5 py-3">
-                    Country
-                  </th>
-                  <th className="text-left text-xs font-semibold text-text-muted uppercase tracking-wide px-5 py-3">
-                    IP Address
-                  </th>
-                  <th className="text-left text-xs font-semibold text-text-muted uppercase tracking-wide px-5 py-3">
-                    Visited At
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border-default">
-                {visitors.slice(0, 50).map((v) => (
-                  <tr key={v.id} className="hover:bg-bg-muted/40">
-                    <td className="px-5 py-3 text-text-primary">
-                      {parseUserAgent(v.userAgent)}
-                    </td>
-                    <td className="px-5 py-3 text-text-primary">
-                      {v.country || "—"}
-                    </td>
-                    <td className="px-5 py-3 text-text-muted font-mono text-xs">
-                      {v.ipAddress || "—"}
-                    </td>
-                    <td className="px-5 py-3 text-text-muted text-xs">
-                      {v.visitedAt
-                        ? new Date(v.visitedAt).toLocaleString()
-                        : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+        const [stats, questionData, visitorData] = await Promise.all([getAnalyticsSummary(), getTopQuestions(), getAllVisitors()]);
+        if (active) { setSummary(stats); setQuestions(questionData); setVisitors(visitorData); }
+      } catch { if (active) setError('Unable to load analytics. Check the API connection and try again.'); }
+      finally { if (active) setLoading(false); }
+    }
+    load(); return () => { active = false; };
+  }, [attempt]);
+  const today = localDate(new Date());
+  const visitorsToday = visitors.filter((visitor) => visitor.visitedAt && localDate(visitor.visitedAt) === today).length;
+  const browsers = visitors.reduce((counts, visitor) => { const name = browserName(visitor.userAgent); counts[name] = (counts[name] || 0) + 1; return counts; }, {});
+  const browserData = Object.entries(browsers).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
+  const topQuestions = questions.slice(0, 10).map((question) => ({ question: question.question?.length > 20 ? `${question.question.slice(0, 20)}…` : question.question, count: question.count }));
+  return <div className="space-y-7"><PageHeader title="Who’s discovering your work?" description="Portfolio activity and conversations, drawn from your existing analytics." />
+    {error ? <div className="admin-error" role="alert">{error}<button className="admin-secondary" onClick={() => { setError(''); setLoading(true); setAttempt((value) => value + 1); }}>Try again</button></div> : <>
+      <div className="admin-stat-grid analytics-stats">{loading ? <SkeletonCard count={3} /> : <><StatCard title="Total Visitors" value={summary?.totalVisitors} /><StatCard title="Visitors Today" value={visitorsToday} sub="Asia/Manila" color="green" /><StatCard title="AI Questions" value={summary?.totalChatMessages} color="purple" /></>}</div>
+      <div className="admin-chart-grid"><section className="admin-chart"><h2>Browser breakdown</h2><p>How visitors explore your portfolio.</p>{loading ? <SkeletonTable /> : browserData.length === 0 ? <div className="chart-empty">No visitor data yet.</div> : <ResponsiveContainer width="100%" height={240}><BarChart data={browserData} margin={{ top: 20, right: 5, left: -25, bottom: 0 }}><CartesianGrid strokeDasharray="3 3" stroke="#1c2b40" vertical={false} /><XAxis dataKey="name" tick={{ fontSize: 14 }} axisLine={false} tickLine={false} /><YAxis allowDecimals={false} tick={{ fontSize: 14 }} axisLine={false} tickLine={false} /><Tooltip /><Bar dataKey="count" fill="#22d3ee" radius={[4, 4, 0, 0]} maxBarSize={45} isAnimationActive={false} /></BarChart></ResponsiveContainer>}</section>
+      <section className="admin-chart"><h2>Top questions</h2><p>What people want to know about your work.</p>{loading ? <SkeletonTable /> : topQuestions.length === 0 ? <div className="chart-empty">No conversations yet.</div> : <ResponsiveContainer width="100%" height={240}><BarChart data={topQuestions} layout="vertical" margin={{ top: 20, right: 10, left: 0, bottom: 0 }}><CartesianGrid strokeDasharray="3 3" stroke="#1c2b40" horizontal={false} /><XAxis type="number" allowDecimals={false} tick={{ fontSize: 14 }} axisLine={false} tickLine={false} /><YAxis dataKey="question" type="category" width={130} tick={{ fontSize: 14 }} axisLine={false} tickLine={false} /><Tooltip /><Bar dataKey="count" fill="#818cf8" radius={[0, 4, 4, 0]} maxBarSize={20} isAnimationActive={false} /></BarChart></ResponsiveContainer>}</section></div>
+      <section><div className="admin-section-heading"><span className="admin-eyebrow">CONVERSATIONS</span><h2>Questions people ask.</h2></div>{loading ? <SkeletonTable /> : <DataTable columns={[{ key: 'question', label: 'Question' }, { key: 'count', label: 'Times asked' }]} data={questions.map((question, index) => ({ ...question, id: question.id || `question-${index}` }))} emptyMessage="Conversations will appear here when visitors use the assistant." />}</section>
+      <section><div className="admin-section-heading"><span className="admin-eyebrow">YOUR AUDIENCE</span><h2>Visitor activity.</h2></div>{loading ? <SkeletonTable /> : <DataTable columns={[{ key: 'browser', label: 'Browser' }, { key: 'country', label: 'Country' }, { key: 'ipAddress', label: 'IP address' }, { key: 'visitedLabel', label: 'Visited at (Manila)' }]} data={visitors.map((visitor) => ({ ...visitor, browser: browserName(visitor.userAgent), visitedLabel: visitor.visitedAt ? new Date(visitor.visitedAt).toLocaleString('en-PH', { timeZone: 'Asia/Manila' }) : '—' }))} emptyMessage="Visitor activity will appear here once it is recorded." />}</section>
+    </>}
+  </div>;
 }

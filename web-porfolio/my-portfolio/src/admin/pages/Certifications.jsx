@@ -26,6 +26,7 @@ const emptyForm = {
 export default function Certifications() {
   const [certs, setCerts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
@@ -36,8 +37,11 @@ export default function Certifications() {
   const fetchCerts = async () => {
     setLoading(true);
     try {
-      const res = await getCertifications({ page: 1, pageSize: 100 });
+      setError('');
+      const res = await getCertifications({ all: true });
       setCerts(res.data ?? []);
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -72,6 +76,7 @@ export default function Certifications() {
     e.preventDefault();
     setSaving(true);
     try {
+      setError('');
       const payload = {
         ...form,
         credentialUrl: form.credentialUrl.trim() || null,
@@ -83,8 +88,8 @@ export default function Certifications() {
       }
       setModalOpen(false);
       await fetchCerts();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setSaving(false);
     }
@@ -93,9 +98,12 @@ export default function Certifications() {
   const confirmDelete = async () => {
     setDeleting(true);
     try {
+      setError('');
       await deleteCertification(deleteTarget.id);
       setDeleteTarget(null);
       await fetchCerts();
+    } catch {
+      setError('Unable to complete this request. Check the API connection and try again.');
     } finally {
       setDeleting(false);
     }
@@ -124,7 +132,7 @@ export default function Certifications() {
             href={val}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline text-xs"
+            className="text-cyan-300 hover:underline text-xs"
           >
             View ↗
           </a>
@@ -142,6 +150,7 @@ export default function Certifications() {
         action={{ label: "Add Certification", onClick: openAdd }}
       />
 
+      {error && !modalOpen && !deleteTarget && <div className="admin-error admin-operation-error" role="alert">{error}<button type="button" aria-label="Dismiss error" onClick={() => setError('')}>×</button></div>}
       {loading ? (
         <SkeletonTable />
       ) : (
@@ -160,6 +169,7 @@ export default function Certifications() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
         loading={saving}
+        error={error}
       >
         <FormField label="Certification Name" required>
           <FormInput
@@ -208,6 +218,7 @@ export default function Certifications() {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
         loading={deleting}
+        error={error}
       />
     </div>
   );

@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+if command -v node >/dev/null 2>&1; then
+  exec node scripts/security-scan.mjs --push
+fi
+runtime=$(git config --local --get security.nodePath || true)
+if [ -n "$runtime" ] && [ -x "$runtime" ]; then
+  exec "$runtime" scripts/security-scan.mjs --push
+fi
+printf '%s\n' 'Push blocked: Node.js is required to scan outgoing commits.' >&2
+exit 1

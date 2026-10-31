@@ -7,6 +7,14 @@ MyPortfolioAdmin.API/.vs/
 **/*.user
 
 # Secrets (never bundle into Docker image)
+**/.env
+**/.env.*
+**/appsettings.*.json
+**/secrets.json
+**/*.pem
+**/*.key
+**/*.pfx
+**/*.p12
 MyPortfolioAdmin.API/MyPortfolioAdmin/appsettings.Development.json
 MyPortfolioAdmin.API/MyPortfolioAdmin/appsettings.Production.json
 MyPortfolioAdmin.API/MyPortfolioAdmin/secrets.json

@@ -1,54 +1,13 @@
-import { NavLink, useLocation } from "react-router-dom";
-
-const navItems = [
-  { label: "Dashboard", path: "/admin/dashboard", icon: "📊" },
-  { label: "Projects", path: "/admin/projects", icon: "🚀" },
-  { label: "Skills", path: "/admin/skills", icon: "⚡" },
-  { label: "Experience", path: "/admin/experience", icon: "💼" },
-  { label: "Certifications", path: "/admin/certifications", icon: "🏆" },
-  { label: "Analytics", path: "/admin/analytics", icon: "📈" },
+﻿import { NavLink, Link } from 'react-router-dom';
+import { FiGrid, FiCode, FiLayers, FiBriefcase, FiAward, FiBarChart2, FiArrowUpRight } from 'react-icons/fi';
+const items = [
+  ['Overview', '/admin/dashboard', FiGrid], ['Projects', '/admin/projects', FiCode],
+  ['Skills', '/admin/skills', FiLayers], ['Experience', '/admin/experience', FiBriefcase],
+  ['Certificates', '/admin/certifications', FiAward], ['Analytics', '/admin/analytics', FiBarChart2],
 ];
-
-export default function Sidebar() {
-  return (
-    <aside className="w-56 shrink-0 bg-bg-card border-r border-border-default h-screen flex flex-col">
-      {/* Brand */}
-      <div className="px-5 py-5 border-b border-border-default">
-        <span className="text-base font-bold text-text-primary">
-          Portfolio CMS
-        </span>
-        <p className="text-xs text-text-muted mt-0.5">Admin Dashboard</p>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 p-3 space-y-0.5">
-        {navItems.map(({ label, path, icon }) => (
-          <NavLink
-            key={path}
-            to={path}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-text-secondary hover:bg-bg-muted hover:text-text-primary"
-              }`
-            }
-          >
-            <span className="text-base">{icon}</span>
-            {label}
-          </NavLink>
-        ))}
-      </nav>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-border-default">
-        <a
-          href="/"
-          className="block text-xs text-text-muted hover:text-text-secondary text-center transition-colors"
-        >
-          ← View Portfolio
-        </a>
-      </div>
-    </aside>
-  );
+export default function Sidebar({ onNavigate }) {
+  return <aside className="admin-sidebar"><Link className="admin-brand" to="/" onClick={onNavigate}><strong>KA<span>.</span></strong><div>Kenneth Altes<small>PORTFOLIO STUDIO</small></div></Link>
+    <div className="admin-nav-label">WORKSPACE</div><nav aria-label="Admin navigation">{items.map(([label, path, Icon]) => <NavLink key={path} to={path} onClick={onNavigate} className={({ isActive }) => isActive ? 'is-active' : ''}><Icon /><span>{label}</span></NavLink>)}</nav>
+    <div className="admin-sidebar-footer"><Link to="/" onClick={onNavigate}>View portfolio <FiArrowUpRight /></Link><small>Content, thoughtfully managed.</small></div>
+  </aside>;
 }

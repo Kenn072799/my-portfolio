@@ -1,12 +1,6 @@
-import axios from "./axios";
-
-export const getExperiences = async () => {
-  const response = await axios.get("/api/experiences", {
-    params: {
-      page: 1,
-      pageSize: 20,
-    },
-  });
-
-  return response.data.data;
-};
+﻿import axios from './axios';
+import { fetchAllPages } from './fetchAllPages';
+export const getExperiences = () => fetchAllPages(async (page) => {
+  const response = await axios.get('/api/experiences', { params: { page, pageSize: 50 } });
+  return response.data;
+});

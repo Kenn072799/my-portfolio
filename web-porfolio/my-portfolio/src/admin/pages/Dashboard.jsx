@@ -1,109 +1,34 @@
-import { useEffect, useState } from "react";
-import { getAnalyticsSummary } from "../api/analyticsApi";
-import { getProjects } from "../api/projectApi";
-import StatCard from "../components/StatCard";
-import SkeletonCard from "../components/SkeletonCard";
-
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FiArrowUpRight, FiCode, FiLayers, FiBriefcase, FiAward, FiBarChart2 } from 'react-icons/fi';
+import { getAnalyticsSummary } from '../api/analyticsApi';
+import { getProjects } from '../api/projectApi';
+import StatCard from '../components/StatCard';
+import SkeletonCard from '../components/SkeletonCard';
+import PageHeader from '../components/PageHeader';
+const shortcuts = [
+  ['Projects', 'Show what you have built.', '/admin/projects', FiCode],
+  ['Skills', 'Keep your toolkit current.', '/admin/skills', FiLayers],
+  ['Experience', 'Tell your professional story.', '/admin/experience', FiBriefcase],
+  ['Certificates', 'Document your learning.', '/admin/certifications', FiAward],
+  ['Analytics', 'Understand portfolio activity.', '/admin/analytics', FiBarChart2],
+];
 export default function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [projectCount, setProjectCount] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    const load = async () => {
+    let active = true;
+    async function load() {
       try {
-        const [s, p] = await Promise.all([
-          getAnalyticsSummary(),
-          getProjects({ page: 1, pageSize: 1 }),
-        ]);
-        setSummary(s);
-        setProjectCount(p.totalCount);
-      } catch {
-        setError("Failed to load dashboard data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-5 text-sm">
-        {error}
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {loading ? (
-          <SkeletonCard count={4} />
-        ) : (
-          <>
-            <StatCard
-              title="Total Visitors"
-              value={summary?.totalVisitors}
-              icon="👥"
-              color="blue"
-            />
-            <StatCard
-              title="AI Questions Asked"
-              value={summary?.totalChatMessages}
-              icon="🤖"
-              color="purple"
-            />
-            <StatCard
-              title="Total Projects"
-              value={projectCount}
-              icon="🚀"
-              color="green"
-            />
-            <StatCard
-              title="Top Question"
-              value={summary?.topQuestionCount}
-              icon="💬"
-              sub={summary?.topQuestion || "No questions yet"}
-              color="orange"
-            />
-          </>
-        )}
-      </div>
-
-      {/* Quick links */}
-      <div className="bg-bg-card rounded-xl border border-border-default shadow-sm p-5">
-        <h3 className="text-sm font-semibold text-text-primary mb-4">
-          Quick Navigation
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {[
-            { label: "Manage Projects", href: "/admin/projects", icon: "🚀" },
-            { label: "Manage Skills", href: "/admin/skills", icon: "⚡" },
-            {
-              label: "Manage Experience",
-              href: "/admin/experience",
-              icon: "💼",
-            },
-            {
-              label: "Certifications",
-              href: "/admin/certifications",
-              icon: "🏆",
-            },
-            { label: "Analytics", href: "/admin/analytics", icon: "📈" },
-          ].map(({ label, href, icon }) => (
-            <a
-              key={href}
-              href={href}
-              className="flex items-center gap-2 p-3 rounded-lg border border-border-default hover:border-blue-200 hover:bg-blue-50 transition-colors text-sm text-text-primary"
-            >
-              <span>{icon}</span> {label}
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+        const [analytics, projects] = await Promise.all([getAnalyticsSummary(), getProjects({ page: 1, pageSize: 1 })]);
+        if (active) { setSummary(analytics); setProjectCount(projects.totalCount); }
+      } catch { if (active) setError('Unable to load your dashboard. Check the API connection and try again.'); }
+      finally { if (active) setLoading(false); }
+    }
+    load(); return () => { active = false; };
+  }, [attempt]);
+  return <><PageHeader title="Your portfolio, at a glance." description="A little perspective on your work and the people discovering it." />{error ? <div className="admin-error" role="alert">{error}<button className="admin-secondary" onClick={() => { setError(''); setLoading(true); setAttempt((value) => value + 1); }}>Try again</button></div> : <div className="admin-stat-grid">{loading ? <SkeletonCard count={4} /> : <><StatCard title="Total Visitors" value={summary?.totalVisitors} /><StatCard title="AI Questions Asked" value={summary?.totalChatMessages} color="purple" /><StatCard title="Total Projects" value={projectCount} color="green" /><StatCard title="Top Question" value={summary?.topQuestionCount} sub={summary?.topQuestion || 'No questions yet'} color="orange" /></>}</div>}<section className="admin-shortcuts"><div className="admin-section-heading"><span className="admin-eyebrow">MAKE IT YOURS</span><h2>Keep your story moving.</h2></div><div className="admin-shortcut-grid">{shortcuts.map(([label, description, path, Icon]) => <Link to={path} key={path}><Icon /><h3>{label}</h3><p>{description}</p><FiArrowUpRight className="shortcut-arrow" /></Link>)}</div></section></>;
 }
